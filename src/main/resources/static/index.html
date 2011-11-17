@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Kreuzverweis Keywording Demo</title>	
+	<link rel="stylesheet" href="css/jquery.ui.base.css">
+	<link rel="stylesheet" href="css/jquery.ui.theme.css">
+	<link rel="stylesheet" href="css/demos.css">	
+  	<link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
+	<style>
+		.ui-autocomplete-loading { background: white url('images/ui-anim_basic_16x16.gif') right center no-repeat; }	
+	
+		#feedback { font-size: 1.4em; }
+		#suggestions .ui-selecting { background: #FECA40; }
+		#suggestions .ui-selected { background: white; color: #505050; }
+		#suggestions span {cursor:pointer; float:left;border-style:solid; margin: 2px; text-align:center;padding:5px; border-radius: 10px;color:#505050;border-width: 1px;border-color:#505050;}
+		
+		#selected .ui-selecting { background: #FECA40; }		
+		#selected span { cursor:pointer;background: #FE7D09; color: white;float:left; margin: 2px; padding: 5px;border-color:#F39814 ; border-radius: 10px; }
+	</style>
+	
+	<script src="js/jquery-1.7.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>	
+	<script src="js/jquery.i18n.properties-min-1.0.9.js" type="text/javascript"></script>
+	<script src="js/jquery.cookie.js" type="text/javascript"></script>
+	<script src="js/kreuzverweis.kaas.webgui.js" type="text/javascript"></script>
+</head>
+<body>
+<!-- /by-Prefix/ -->
+<!-- /proposals/ -->
+
+	<!-- Panel -->
+	<div id="toppanel">
+		<div id="panel">
+			<div class="content clearfix">
+				<div class="left">
+					<a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a>
+				</div>
+				<div class="left">
+					<!-- Login Form -->
+					<!-- <form class="clearfix" action="login()" method="post">-->
+						<h1 id="member_login">Member Login</h1>
+						<label id="member_userid" class="grey" for="log">Username:</label>
+						<input class="field" type="text" name="log" id="token" size="23" />
+						<label id="member_pwd" class="grey" for="pwd">Password:</label>
+						<input class="field" type="password" name="pwd" id="secret" size="23" />
+						<!--<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>-->
+						<br/><br/>
+						<input type="submit" value="Login" id="login" class="ui-widget" />
+						<!--<a class="lost-pwd" href="#">Lost your password?</a>-->
+					<!--</form>-->
+				</div>
+				<div id="registrationPanel" class="left right">		
+					<h1 id="member_sign_up">Sign Up</h1>
+						<form method="POST" action="http://data.kreuzverweis.com/oauth/tag-credentials">
+						<label id="member_enter_your_email" class="field" for="email">Enter you email below to receive your login credentials:</label>
+						<input class="field" type="text" size="30" name="email">
+						<br/><br/>
+						<input id="member_register" class="ui-widget" type="submit" value="Register" name="submit">
+					</form>
+				</div>
+			</div>
+		</div> <!-- /login -->	
+		<!-- The tab on top -->	
+		<div class="tab">
+			<ul class="login">
+				<li class="left">&nbsp;</li>
+				<li id="userWelcome"></li>
+				<li class="sep">|</li>
+				<li id="toggle">
+					<a id="open" class="open" href="#">Log In | Register</a>
+					<a id="close" style="display: none;" class="close" href="#">Close Panel</a>			
+				</li>
+				<li class="right">&nbsp;</li>
+			</ul> 
+		</div> <!-- / top -->
+	
+	</div> <!--panel -->
+
+	<div style="width:650px;margin-top:100px; margin-left: auto ; margin-right: auto; font-size:14px;color:#505050;">	
+		<h1 style="align:center;text-align:center;">Keywording<img style="margin:0px;padding:0px;margin-left:-15px;vertical-align:super;" src="images/beta.png"/> by <a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a></h1>	
+
+			<div id="step1" class="ui-widget" style="width:100%;margin-top:45px;text-align:left;">
+				<br/>
+				<input type="text" id="keyword"  style="width:300px;border-radius:5px;border-style:solid;border-width:1px;border-color:#505050;"/>
+			</div>
+					
+			<div id="step2" class="ui-widget" style="width: 100%;margin-top:45px;">
+				<br/>
+				<div id="suggestions" style="margin-top:10px;width:100%;overflow:auto;"></div>					
+				<div id="loadingDiv" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></div>
+			</div>
+			
+			<div id="step3" class="ui-widget" style="width: 100%;margin-top:45px;">
+				<button id="copy" style="font-size:14px;">Copy to clipboard</button>				
+				<div id="selected" style="margin-top:10px;width:100%;overflow:auto;"/>
+			</div>
+			
+			<div class="ui-widget" style="width: 100%;margin-top:45px;">
+				<button id="clear" style="font-size:14px;display:none;">Clear</button>
+			</div>
+	</div>
+</body>
+</html>
