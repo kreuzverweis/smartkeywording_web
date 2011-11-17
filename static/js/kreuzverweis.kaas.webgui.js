@@ -136,7 +136,7 @@
 		$("#open").empty().append(msg.member.open);
 		$("#close").empty().append(msg.member.close);
 		
-		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Cappuchino, Baum, Brooklyn Bridge, ...'>"+msg.examples+"</span>):");
+		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Baum, Brooklyn Bridge, ...'>"+msg.examples+"</span>):");
 		$("#step2").prepend("<span>"+msg.step2+"</span>");
 		$("#step3").prepend("<span>"+msg.step3+"</span>");
 		$("#copy").empty().append(msg.copy);
