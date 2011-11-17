@@ -1,8 +1,6 @@
 
 	var suggestions = new Array();
 	var selected = new Array();
-	var loginAttempts = 0;
-	var loginFailures = 0;
 	
 	jQuery.i18n.properties({
 		name:'messages', 
@@ -25,6 +23,18 @@
 					successFunc.call(xmlResponse,token,secret);
 				}
 		});		
+	}
+	
+	function handleAjaxError(jqXHR) {
+		if (jqXHR.status == 401) {
+			// user unauthorized
+			console.log("not authorized");
+			$("div#panel").slideDown("slow");
+			$("#toggle a").toggle();
+			$("#userWelcome").empty().append(msg.member.notLoggedIn);
+		} else {
+			console.log(msg.app.problem);			
+		}
 	}
 	
 	function getKeywordCSV() {
@@ -54,17 +64,17 @@
 	
 	function getProposals() {					
 		$.ajax({
-				url: "/proposals/"+encodeURIComponent(getKeywordCSV())+"?limit=20",
+				url: "/proposals/"+encodeURIComponent(getKeywordCSV()),
+				data : {limit: 20},
 				dataType: "xml",
 				error: function(jqXHR, textStatus, errorThrown) {
-					//TODO error handling and login popup if authentication failure
+					handleAjaxError(jqXHR);
 					console.log("Proposal error text status: "+textStatus);
 					console.log("Proposal error jyXHR: "+jqXHR);
 					console.log("Proposal error thrown: "+errorThrown);
-					return [];
 				},
 				context: $("#suggestions"),
-				beforeSend: function() {
+				beforeSend: function(xhr) {
 					$("#loadingDiv").show();
 				},
 				complete: function() {
@@ -120,12 +130,11 @@
 		$("#member_userid").empty().append(msg.member.userid);
 		$("#member_pwd").empty().append(msg.member.pwd);
 		$("#member_sign_up").empty().append(msg.member.sign_up);		$("#member_enter_your_email").empty().append(msg.member.enter_your_email);
-		$("#member_register").attr({
-			value: msg.member.register});
+		$("#member_register").attr("value", msg.member.register);
 		$("#open").empty().append(msg.member.open);
 		$("#close").empty().append(msg.member.close);
 		
-		$("#step1").prepend("<span>"+msg.step1+"</span>");
+		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Cappuchino, Baum, Brooklyn Bridge, ...'>"+msg.examples+"</span>):");
 		$("#step2").prepend("<span>"+msg.step2+"</span>");
 		$("#step3").prepend("<span>"+msg.step3+"</span>");
 		$("#copy").empty().append(msg.copy);
@@ -134,13 +143,7 @@
 		login($.cookie('token'),$.cookie('secret'),
 			function(token,secret) {
 				console.log("authentication failed");
-				if (this.status == 404) { 
-					console.log("not authorized");
-					$("div#panel").slideDown("slow");
-					$("#toggle a").toggle();
-				} else {
-					//TODO report to the user that the app cannot be run right now
-				}
+				handleAjaxError(this);
 			},
 			function(token,secret) {
 				console.log("successfull login with token "+token);																	
@@ -150,28 +153,45 @@
 				
 		$("#login").click(function () {		
 			login($("#token").val(),$("#secret").val(),
-				function(token,secret) {
-					console.log("running inside error func");
-					if (this.status == 404) { 
-						// display authentication failure message
-						loginAttempts = loginAttempts + 1;
-						if (loginAttempts == 1) {
-							$("label:first").prepend(msg.member.authenticationFailed+"<br/>");
-						}				
+				function(token,secret) {					
+					if (this.status == 401) { 
+						// display authentication failure message						$("#login_messages").empty().append(msg.member.authenticationFailed);
 					} else {
-						loginFailures = loginFailures + 1;
-						if (loginFailures == 1) {
-							$("label:first").prepend(msg.member.authenticationError+"<br/>");
-						}
-					}				
+						$("#login_messages").empty().append(msg.member.authenticationError);
+					}			
+					$("#login_messages").effect("highlight", {}, 500);
 				},
 				function(token,secret) {
+					$("#login_messages").empty();
 					console.log("successfull login with token "+token);
 					$("div#panel").slideUp("slow");
 					$("#toggle a").toggle();
+					$("#userWelcome").empty().append(msg.member.loggedIn);
 				}
 			);		
-		});						
+		});		
+		
+		$("#register").click(function () {
+			$.ajax({
+				type: "POST",
+				url: "http://data.kreuzverweis.com/oauth/tag-credentials",
+				data : {email: $("#email").val()},
+				dataType: "html",
+				contentType: "application/x-www-form-urlencoded",
+				error: function(jqXHR, textStatus, errorThrown) {
+					//TODO error handling and login popup if authentication failure
+					console.log("register error text status: "+textStatus);
+					console.log("register error jyXHR: "+jqXHR);
+					console.log("register error thrown: "+errorThrown);
+				},								
+				complete: function() {
+					
+				},
+				success: function( response ) {							
+					alert(msg.member.signIn);		
+				}
+			});
+		});
 						
 		// Expand Panel
 		$("#open").click(function(){
@@ -207,14 +227,16 @@
     	$("#clear").click(function(){
 			selected = [];
 			suggestions = [];
-			$("#suggestions > span").fadeOut(1000, function () {
+			$("#suggestions > span").fadeOut(500, function () {
 				$(this).remove();
 				});
-			$("#selected > span").fadeOut(1000, function () {
+			$("#selected > span").fadeOut(500, function () {
 				$(this).remove();
 			});
-			$(this).toggle(500);
+			$(this).toggle(200);
     	});
+
+		$("#examples").tooltip();
 
 		$("#keyword").keyup(function(eventObject) {
 			if (eventObject.keyCode == 13) { // if enter has been pressed
@@ -232,12 +254,12 @@
 				$.ajax({
 					url: "/by-prefix/"+encodeURIComponent(request.term)+"?limit=10",
 					dataType: "xml",
-					error: function(jqXHR, textStatus, errorThrown) {
-						console.log("Autocomplete error text status: "+textStatus);
-						console.log("Autocomplete error jyXHR: "+jqXHR);
-						console.log("Autocomplete error thrown: "+errorThrown);
-						return [];
+					error: function(jqXHR, textStatus, errorThrown) {	
+						handleAjaxError(jqXHR);
 					},
+					complete : function () {
+						$( "#keyword" ).removeClass("ui-autocomplete-loading");
+						},
 					success: function( xmlResponse ) {                                              
 								response($( "keyword", xmlResponse ).map(function() {
 									return {

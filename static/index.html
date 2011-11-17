@@ -3,13 +3,23 @@
 <head>
 	<meta charset="utf-8">
 	<title>Kreuzverweis Keywording Demo</title>	
-	<link rel="stylesheet" href="css/jquery.ui.base.css">
-	<link rel="stylesheet" href="css/jquery.ui.theme.css">
+	<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
 	<link rel="stylesheet" href="css/demos.css">	
   	<link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
 	<style>
 		.ui-autocomplete-loading { background: white url('images/ui-anim_basic_16x16.gif') right center no-repeat; }	
-	
+		
+		.clickable {color: #0066DD; cursor:pointer;}
+		.tooltip {
+			display:none;
+			background: gray;	
+			border-style: solid;
+			border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-color: gray;			
+			padding:5px;
+			color:#fff;	
+		}
 		#feedback { font-size: 1.4em; }
 		#suggestions .ui-selecting { background: #FECA40; }
 		#suggestions .ui-selected { background: white; color: #505050; }
@@ -23,18 +33,17 @@
 	<script src="js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>	
 	<script src="js/jquery.i18n.properties-min-1.0.9.js" type="text/javascript"></script>
 	<script src="js/jquery.cookie.js" type="text/javascript"></script>
+	<script src="js/jquery.tools.min.js" type="text/javascript"></script>
 	<script src="js/kreuzverweis.kaas.webgui.js" type="text/javascript"></script>
 </head>
 <body>
-<!-- /by-Prefix/ -->
-<!-- /proposals/ -->
-
 	<!-- Panel -->
 	<div id="toppanel">
 		<div id="panel">
 			<div class="content clearfix">
 				<div class="left">
 					<a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a>
+					<div style="margin:20px;" id="login_messages"></div>
 				</div>
 				<div class="left">
 					<!-- Login Form -->
@@ -52,11 +61,11 @@
 				</div>
 				<div id="registrationPanel" class="left right">		
 					<h1 id="member_sign_up">Sign Up</h1>
-						<form method="POST" action="http://data.kreuzverweis.com/oauth/tag-credentials">
+						<!--<form method="POST" action="http://data.kreuzverweis.com/oauth/tag-credentials">-->
 						<label id="member_enter_your_email" class="field" for="email">Enter you email below to receive your login credentials:</label>
 						<input class="field" type="text" size="30" name="email">
 						<br/><br/>
-						<input id="member_register" class="ui-widget" type="submit" value="Register" name="submit">
+						<input class="ui-widget" type="submit" id="member_register" value="Register" name="submit">
 					</form>
 				</div>
 			</div>
@@ -81,7 +90,7 @@
 		<h1 style="align:center;text-align:center;">Keywording<img style="margin:0px;padding:0px;margin-left:-15px;vertical-align:super;" src="images/beta.png"/> by <a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a></h1>	
 
 			<div id="step1" class="ui-widget" style="width:100%;margin-top:45px;text-align:left;">
-				<br/>
+				<div id="step1_label"></div>
 				<input type="text" id="keyword"  style="width:300px;border-radius:5px;border-style:solid;border-width:1px;border-color:#505050;"/>
 			</div>
 					
@@ -91,12 +100,13 @@
 				<div id="loadingDiv" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></div>
 			</div>
 			
-			<div id="step3" class="ui-widget" style="width: 100%;margin-top:45px;">
-				<button id="copy" style="font-size:14px;">Copy to clipboard</button>				
+			<div id="step3" class="ui-widget" style="width: 100%;margin-top:45px;">				
 				<div id="selected" style="margin-top:10px;width:100%;overflow:auto;"/>
 			</div>
 			
 			<div class="ui-widget" style="width: 100%;margin-top:45px;">
+				4.
+				<button id="copy" style="font-size:14px;">Copy to clipboard</button>				
 				<button id="clear" style="font-size:14px;display:none;">Clear</button>
 			</div>
 	</div>
