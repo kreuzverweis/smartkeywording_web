@@ -14,6 +14,7 @@ import unfiltered.response.Unauthorized
 import unfiltered.response.InternalServerError
 import unfiltered.response.BadRequest
 import unfiltered.response.Ok
+import unfiltered.response.MethodNotAllowed
 
 /**
  * @author carsten
@@ -27,6 +28,21 @@ object Proxy extends Plan with ServerErrorResponse {
   val consumer = Consumer("kreuzverweis-web", "Yohv9aiQuaigiasheiSo")
   
 	def intent = {
+	  case req @ POST(Path("/credentials")) => {
+	    try {
+		    val Params(form) = req
+		    println("form: %s".format(form.toString))
+		    if (!form.isDefinedAt("email")) {
+		      req.respond(BadRequest ~> ResponseString("No email specified."))
+		    } else {
+  		    h(credentials << Map("email" -> form("email").head)  >- { res =>
+  		      req.respond(Ok)
+  		    })
+	      }
+	    } catch {
+	      case e => req.respond(InternalServerError ~> ResponseString(e.getMessage()))
+	    }
+	  }
 	  case req @ GET(Path(Seg("by-prefix" :: term :: Nil))) & Cookies(cookies) & Params(params) => {
 	    val limit = if (params.isDefinedAt("limit")) Map("limit" -> params("limit").head) else Map[String, String]()
 	    getToken(cookies) match {
@@ -60,18 +76,8 @@ object Proxy extends Plan with ServerErrorResponse {
 	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
 	    }
 	  }
-	  case req @ POST(Path("credentials")) => {
-	    val Params(form) = req
-	    if (!form.isDefinedAt("email")) {
-	      req.respond(BadRequest ~> ResponseString("No email specified."))
-	    }
-	    try {
-		    h(credentials << Traversable(("email", form("email").head)) >- { res =>
-		      req.respond(Ok)
-		    })
-	    } catch {
-	      case e => req.respond(InternalServerError ~> ResponseString(e.getMessage()))
-	    }
+	  case req @ _ => {
+	    req.respond(MethodNotAllowed ~> ResponseString("eek"))
 	  }
 	}
   
