@@ -21,6 +21,7 @@ import unfiltered.response.MethodNotAllowed
  *
  */
 object Proxy extends Plan with ServerErrorResponse {
+  val logger = org.clapper.avsl.Logger(Proxy.getClass)
   val h = new Http
   val prefix = url("http://kvnode1.uni-koblenz.de:8080/keywords/by-prefix")
   val proposal = url("http://kvnode1.uni-koblenz.de:8080/keywords/proposals")
@@ -79,6 +80,7 @@ object Proxy extends Plan with ServerErrorResponse {
 	}
   
   def getToken(cookies: Map[String, Option[Cookie]]): Option[Token] = { 
+    logger.info("bypassed")
     for {
     	tokenc <- cookies.get("token")
     	secretc <- cookies.get("secret")
