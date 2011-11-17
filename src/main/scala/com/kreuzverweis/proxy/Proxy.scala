@@ -75,10 +75,7 @@ object Proxy extends Plan with ServerErrorResponse {
 	    		}
 	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
 	    }
-	  }
-	  case req @ _ => {
-	    req.respond(MethodNotAllowed ~> ResponseString("eek"))
-	  }
+	  }	  
 	}
   
   def getToken(cookies: Map[String, Option[Cookie]]): Option[Token] = { 

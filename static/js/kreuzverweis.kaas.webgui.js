@@ -1,6 +1,8 @@
 
 	var suggestions = new Array();
 	var selected = new Array();
+	var complReqs = new Array();
+	var propReqs = new Array();
 	
 	jQuery.i18n.properties({
 		name:'messages', 
@@ -170,23 +172,32 @@
 				}
 			);		
 		});		
+				
+		$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {		
+			if (options.url.indexOf("/by-prefix") === 0) {
+				for (i in complReqs) {
+					complReqs[i].abort();
+				}
+				complReqs.push(jqXHR);
+			} else if (options.url.indexOf("/proposals") === 0) {
+				for (i in propReqs) {
+					propReqs[i].abort();
+				}
+				propReqs.push(jqXHR);
+			}
+		});		
 		
-		$("#register").click(function () {
+		$("#member_register").click(function () {
 			$.ajax({
 				type: "POST",
-				url: "http://data.kreuzverweis.com/oauth/tag-credentials",
-				data : {email: $("#email").val()},
-				dataType: "html",
-				contentType: "application/x-www-form-urlencoded",
+				url: "/credentials",
+				data : {email: $("#email").val()},								
 				error: function(jqXHR, textStatus, errorThrown) {
 					//TODO error handling and login popup if authentication failure
 					console.log("register error text status: "+textStatus);
 					console.log("register error jyXHR: "+jqXHR);
 					console.log("register error thrown: "+errorThrown);
-				},								
-				complete: function() {
-					
-				},
+				},												
 				success: function( response ) {							
 					alert(msg.member.signIn);		
 				}
