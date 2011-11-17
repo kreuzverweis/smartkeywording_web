@@ -12,6 +12,8 @@ import OAuth._
 import unfiltered.Cookie
 import unfiltered.response.Unauthorized
 import unfiltered.response.InternalServerError
+import unfiltered.response.BadRequest
+import unfiltered.response.Ok
 
 /**
  * @author carsten
@@ -21,7 +23,8 @@ object Proxy extends Plan with ServerErrorResponse {
   val h = new Http
   val prefix = url("http://kvnode1.uni-koblenz.de:8080/keywords/by-prefix")
   val proposal = url("http://kvnode1.uni-koblenz.de:8080/keywords/proposals")
-  val consumer = Consumer("kreuzverweis-tag", "adeef6eiW")
+  val credentials = url("http://kvnode1.uni-koblenz.de:8080/oauth/web-credentials")
+  val consumer = Consumer("kreuzverweis-web", "Yohv9aiQuaigiasheiSo")
   
 	def intent = {
 	  case req @ GET(Path(Seg("by-prefix" :: term :: Nil))) & Cookies(cookies) & Params(params) => {
@@ -55,6 +58,19 @@ object Proxy extends Plan with ServerErrorResponse {
 	    			case e => req.respond(InternalServerError ~> ResponseString(e.getMessage))
 	    		}
 	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
+	    }
+	  }
+	  case req @ POST(Path("credentials")) => {
+	    val Params(form) = req
+	    if (!form.isDefinedAt("email")) {
+	      req.respond(BadRequest ~> ResponseString("No email specified."))
+	    }
+	    try {
+		    h(credentials << Traversable(("email", form("email").head)) >- { res =>
+		      req.respond(Ok)
+		    })
+	    } catch {
+	      case e => req.respond(InternalServerError ~> ResponseString(e.getMessage()))
 	    }
 	  }
 	}
