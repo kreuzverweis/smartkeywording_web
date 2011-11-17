@@ -2,7 +2,7 @@
  *
  */
 package com.kreuzverweis.proxy
-import unfiltered.netty.async.Plan
+import unfiltered.netty.cycle._
 import unfiltered.request._
 import unfiltered.response.ResponseString
 import unfiltered.netty.ServerErrorResponse
@@ -20,7 +20,7 @@ import unfiltered.response.MethodNotAllowed
  * @author carsten
  *
  */
-object Proxy extends Plan with ServerErrorResponse {
+object Proxy extends Plan with ThreadPool with ServerErrorResponse {
   val h = new Http
   val prefix = url("http://kvnode1.uni-koblenz.de:8080/keywords/by-prefix")
   val proposal = url("http://kvnode1.uni-koblenz.de:8080/keywords/proposals")
@@ -33,14 +33,19 @@ object Proxy extends Plan with ServerErrorResponse {
 		    val Params(form) = req
 		    println("form: %s".format(form.toString))
 		    if (!form.isDefinedAt("email")) {
-		      req.respond(BadRequest ~> ResponseString("No email specified."))
+//		      req.respond(BadRequest ~> ResponseString("No email specified."))
+		      BadRequest ~> ResponseString("No email specified.")
 		    } else {
   		    h(credentials << Map("email" -> form("email").head)  >- { res =>
-  		      req.respond(Ok)
+//  		      req.respond(Ok)
+  		      Ok
   		    })
 	      }
 	    } catch {
-	      case e => req.respond(InternalServerError ~> ResponseString(e.getMessage()))
+	      case e => {
+//	       req.respond(InternalServerError ~> ResponseString(e.getMessage()))
+	       InternalServerError ~> ResponseString(e.getMessage())
+	      }
 	    }
 	  }
 	  case req @ GET(Path(Seg("by-prefix" :: term :: Nil))) & Cookies(cookies) & Params(params) => {
@@ -50,13 +55,14 @@ object Proxy extends Plan with ServerErrorResponse {
 		    	val a = prefix / term <<? limit
 		    	try {
 			    	h(a <@ (consumer, token) >- { res =>
-			    		req.respond(ResponseString(res))
+//			    		req.respond(ResponseString(res))
+			    		ResponseString(res)
 			    	})
 	    		} catch {
-	    			case StatusCode(401, m) => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
-	    			case e => req.respond(InternalServerError ~> ResponseString(e.getMessage))
+	    			case StatusCode(401, m) => Unauthorized ~> ResponseString("No credentials supplied.")
+	    			case e => InternalServerError ~> ResponseString(e.getMessage)
 	    		}
-	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
+	      case None => Unauthorized ~> ResponseString("No credentials supplied.")
 	    }
 	  }
 	  case req @ GET(Path(Seg("proposals" :: terms :: Nil))) & Cookies(cookies) & Params(params) => {
@@ -67,13 +73,13 @@ object Proxy extends Plan with ServerErrorResponse {
 			    val r = a <@ (consumer, token)
 		    	try {
 				    h(r >- { res =>
-				    	req.respond(ResponseString(res))
+				    	ResponseString(res)
 				    })
 	    		} catch {
-	    			case StatusCode(401, m) => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
-	    			case e => req.respond(InternalServerError ~> ResponseString(e.getMessage))
+	    			case StatusCode(401, m) => Unauthorized ~> ResponseString("No credentials supplied.")
+	    			case e => InternalServerError ~> ResponseString(e.getMessage)
 	    		}
-	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
+	      case None => Unauthorized ~> ResponseString("No credentials supplied.")
 	    }
 	  }
 	}
