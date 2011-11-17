@@ -21,7 +21,6 @@ import unfiltered.response.MethodNotAllowed
  *
  */
 object Proxy extends Plan with ServerErrorResponse {
-  val logger = org.clapper.avsl.Logger(Proxy.getClass)
   val h = new Http
   val prefix = url("http://kvnode1.uni-koblenz.de:8080/keywords/by-prefix")
   val proposal = url("http://kvnode1.uni-koblenz.de:8080/keywords/proposals")
@@ -76,11 +75,10 @@ object Proxy extends Plan with ServerErrorResponse {
 	    		}
 	      case None => req.respond(Unauthorized ~> ResponseString("No credentials supplied."))
 	    }
-	  }	  
+	  }
 	}
   
   def getToken(cookies: Map[String, Option[Cookie]]): Option[Token] = { 
-    logger.info("bypassed")
     for {
     	tokenc <- cookies.get("token")
     	secretc <- cookies.get("secret")
@@ -91,10 +89,11 @@ object Proxy extends Plan with ServerErrorResponse {
   			case Cookie(_, token, _, _, _, _) =>
   				secret match {
   					case Cookie(_, secret, _, _, _, _) =>
-  					    Token("9ccbf691-93f0-4411-b0a6-b4c712ffef72", "55b15110-d027-456d-bdb0-d1eb9860d212")
+       				Token(token, secret)  
   				}
   			}
     }
+    Some(Token("9ccbf691-93f0-4411-b0a6-b4c712ffef72", "55b15110-d027-456d-bdb0-d1eb9860d212"))
   }
-  Token("9ccbf691-93f0-4411-b0a6-b4c712ffef72", "55b15110-d027-456d-bdb0-d1eb9860d212")
+  
 }
