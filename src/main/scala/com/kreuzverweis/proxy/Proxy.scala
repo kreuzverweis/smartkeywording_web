@@ -89,10 +89,10 @@ object Proxy extends Plan with ServerErrorResponse {
   			case Cookie(_, token, _, _, _, _) =>
   				secret match {
   					case Cookie(_, secret, _, _, _, _) =>
-       				Token(token, secret)  
+  					    Token("9ccbf691-93f0-4411-b0a6-b4c712ffef72", "55b15110-d027-456d-bdb0-d1eb9860d212")
   				}
   			}
     }
   }
-  
+  Token("9ccbf691-93f0-4411-b0a6-b4c712ffef72", "55b15110-d027-456d-bdb0-d1eb9860d212")
 }
