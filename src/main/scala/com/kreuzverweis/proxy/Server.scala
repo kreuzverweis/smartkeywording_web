@@ -8,7 +8,8 @@ object Server {
   val http = new dispatch.nio.Http
 
   def main(args: Array[String]) {
-    unfiltered.netty.Http(8888)
+    val port = if (args.headOption.isDefined) args.head.toInt else 8888
+    unfiltered.netty.Http(port)
       .handler(Proxy)
       .resources((new File("static")).toURI().toURL())
       .run { s =>
