@@ -47,7 +47,7 @@ object Proxy extends Plan {
 	  case req @ GET(Path(Seg("by-prefix" :: term :: Nil))) & Cookies(cookies) & Params(params) => {
 	    getToken(cookies) match {
 	      case Some(token) =>
-		    	val a = prefix / term <<? translateParameters(params)
+		    	val a = prefix / term <<? translateParameters(params, cookies)
 		    	try {
 			    	h(a <@ (consumer, token) >- { res =>
 			    		ResponseString(res)
@@ -62,7 +62,7 @@ object Proxy extends Plan {
 	  case req @ GET(Path(Seg("proposals" :: terms :: Nil))) & Cookies(cookies) & Params(params) => {
 	    getToken(cookies) match {
 	      case Some(token) =>
-			    val a = proposal / terms <<? translateParameters(params)
+			    val a = proposal / terms <<? translateParameters(params, cookies)
 			    val r = a <@ (consumer, token)
 		    	try {
 				    h(r >- { res =>
@@ -77,10 +77,19 @@ object Proxy extends Plan {
 	  }
 	}
   
-  def translateParameters(params: Map[String, Seq[String]]): Traversable[(String, String)] = for {
-    pk <- params.keys
-    v <- params(pk)
-  } yield (pk, v)
+  def translateParameters(params: Map[String, Seq[String]], cookies: Map[String, Option[unfiltered.Cookie]]): Traversable[(String, String)] = {
+    val p = for {
+      pk <- params.keys
+      v <- params(pk)
+    } yield (pk, v)
+    if (cookies.isDefinedAt("split")) {
+      val ret = p filter {case (k, v) => k != "split"}
+      val split = cookies("split").get.value
+      ret.toList :+ (("split", split))
+    } else {
+      p
+    }
+  }
   
   def getToken(cookies: Map[String, Option[Cookie]]): Option[Token] = { 
     for {
