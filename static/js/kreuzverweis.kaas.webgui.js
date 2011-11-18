@@ -3,6 +3,7 @@
 	var selected = new Array();
 	var complReqs = new Array();
 	var propReqs = new Array();
+	var loggedIn = false;
 	
 	jQuery.i18n.properties({
 		name:'messages', 
@@ -31,11 +32,13 @@
 		if (jqXHR.status == 401) {
 			// user unauthorized
 			console.log("not authorized");
-			$("div#panel").slideDown("slow");
-			$("#toggle a").toggle();
+			if ($("#toggle a").attr("id") == 'open') {
+				$("div#panel").slideDown("slow");
+				$("#toggle a").toggle();
+			}
 			$("#userWelcome").empty().append(msg.member.notLoggedIn);
 		} else {
-			console.log(msg.app.problem);			
+			console.log(msg.member.authenticationError);			
 		}
 	}
 	
@@ -127,16 +130,33 @@
 			score: score}).text(label);
 	}
 	
+	function setRecMethod() {
+		var method = $.cookie("split");
+		if (method == "dbp37i_noloc") {
+			$("#recmethod2").attr("checked","");
+			//$("#recmethod1").removeAttr("checked");
+		} else { // set method to abstracts_dbp37i
+			$("#recmethod1").attr("checked","true");
+			//$("#recmethod2").removeAttr("checked");
+			$.cookie("split","abstracts_dbp37i");
+		}
+	}
+	
 	$(function() {	
+		$("#login_messages").empty().append(msg.member.welcome);
 		$("#member_login").empty().append(msg.member.login);
 		$("#member_userid").empty().append(msg.member.userid);
 		$("#member_pwd").empty().append(msg.member.pwd);
+		$("#member_recmethod").empty().append(msg.member.recmethod);
+		$("#member_recmethod1").prepend(msg.member.recmethod1);
+		$("#member_recmethod2").prepend(msg.member.recmethod2);
+		setRecMethod();			
 		$("#member_sign_up").empty().append(msg.member.sign_up);		$("#member_enter_your_email").empty().append(msg.member.enter_your_email);
 		$("#member_register").attr("value", msg.member.register);
 		$("#open").empty().append(msg.member.open);
 		$("#close").empty().append(msg.member.close);
 		
-		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Baum, Brooklyn Bridge, ...'>"+msg.examples+"</span>):");
+		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
 		$("#step2").prepend("<span>"+msg.step2+"</span>");
 		$("#step3").prepend("<span>"+msg.step3+"</span>");
 		$("#copy").empty().append(msg.copy);
@@ -150,6 +170,8 @@
 			function(token,secret) {
 				console.log("successfull login with token "+token);																	
 				$("#userWelcome").empty().append(msg.member.loggedIn);
+				$("#panel > div > div:first ").empty().append(msg.member.loggedIn);
+				loggedIn = true;
 			}
 		);						
 				
@@ -157,7 +179,8 @@
 			login($("#token").val(),$("#secret").val(),
 				function(token,secret) {					
 					if (this.status == 401) { 
-						// display authentication failure message						$("#login_messages").empty().append(msg.member.authenticationFailed);
+						// display authentication failure message
+						$("#login_messages").empty().append(msg.member.authenticationFailed);
 					} else {
 						$("#login_messages").empty().append(msg.member.authenticationError);
 					}			
@@ -169,9 +192,15 @@
 					$("div#panel").slideUp("slow");
 					$("#toggle a").toggle();
 					$("#userWelcome").empty().append(msg.member.loggedIn);
+					$("#panel > div > div:first ").empty().append(msg.member.loggedIn);
+					loggedIn = true;
 				}
 			);		
 		});		
+		
+		$("input[name='recmethod']").click(function () {
+			$.cookie('split',this.value);
+		});
 				
 		$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {		
 			if (options.url.indexOf("/by-prefix") === 0) {
@@ -207,17 +236,19 @@
 		// Expand Panel
 		$("#open").click(function(){
 			$("div#panel").slideDown("slow");	
+			$("#toggle a").toggle();
 		});	
 		
 		// Collapse Panel
 		$("#close").click(function(){
-			$("div#panel").slideUp("slow");	
-		});		
-		
-		// Switch buttons from "Log In | Register" to "Close Panel" on click
-		$("#toggle a").click(function () {
-			$("#toggle a").toggle();
-		});									
+			if (loggedIn) {
+				$("div#panel").slideUp("slow");	
+				$("#toggle a").toggle();
+			} else {
+				//alert(msg.member.welcome);
+				$("#login_messages").effect("highlight", {}, 500);
+			}
+		});												
 			
 		$( "#suggestions" ).selectable({
 			selected: function(event, ui) { 				
@@ -258,8 +289,8 @@
 					this.value="";					
 				}
 			}
-		});
-
+		});				
+		
 		$( "#keyword" ).autocomplete({
 			source: function( request, response ) {
 				$.ajax({

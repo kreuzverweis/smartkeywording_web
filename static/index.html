@@ -8,7 +8,7 @@
   	<link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
 	<style>
 		.ui-autocomplete-loading { background: white url('images/ui-anim_basic_16x16.gif') right center no-repeat; }	
-		
+	
 		.clickable {color: #0066DD; cursor:pointer;}
 		.tooltip {
 			display:none;
@@ -53,8 +53,10 @@
 						<input class="field" type="text" name="log" id="token" size="23" />
 						<label id="member_pwd" class="grey" for="pwd">Password:</label>
 						<input class="field" type="password" name="pwd" id="secret" size="23" />
+						<label id="member_recmethod"></label><br/>
+						<span id="member_recmethod1" for="member_recmethod1"><input id="recmethod1" name="recmethod" type="radio" value="abstracts_dbp37i" checked></span>						
+						<span id="member_recmethod2" for="member_recmethod2"><input id="recmethod2" name="recmethod" type="radio"	value="dbp37i_noloc"></span><br/><br/>					
 						<!--<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>-->
-						<br/><br/>
 						<input type="submit" value="Login" id="login" class="ui-widget" />
 						<!--<a class="lost-pwd" href="#">Lost your password?</a>-->
 					<!--</form>-->
@@ -77,8 +79,8 @@
 				<li id="userWelcome"></li>
 				<li class="sep">|</li>
 				<li id="toggle">
-					<a id="open" class="open" href="#">Log In | Register</a>
-					<a id="close" style="display: none;" class="close" href="#">Close Panel</a>			
+					<a id="open" style="display: none;" class="open" href="#">Log In | Register</a>
+					<a id="close"  class="close" href="#">Close Panel</a>			
 				</li>
 				<li class="right">&nbsp;</li>
 			</ul> 
