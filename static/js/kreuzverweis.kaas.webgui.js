@@ -34,20 +34,26 @@
 		});		
 	}
 	
-	function handleAjaxError(jqXHR) {
+	function handleAjaxError(jqXHR) {		
 		if (jqXHR.status == 401) {
 			// user unauthorized
-			console.log("not authorized");
-			if ($("#toggle a:hidden").attr("id") == 'close') {
-				// show panel
-				$("div#panel").slideDown("slow");
-				$("#toggle a").toggle();
-			}
-			$("#login_messages").empty().append(msg.member.welcome);
+			console.log("not authorized");						
 			$("#userWelcome").empty().append(msg.member.notLoggedIn);
-			setRecMethod();
+			$("#login_messages").empty().append(msg.member.welcome);
 		} else {
-			console.log(msg.member.authenticationError);			
+			console.log("error occurred");			
+			$("#login_messages").empty().append(msg.app.problem);
+		}				
+		if ($("#toggle a:hidden").attr("id") == 'close') {
+			// show panel
+			$("div#panel").slideDown("slow",
+				function () {
+					$("#login_messages").effect("highlight", {}, 500);
+				}
+			);
+			$("#toggle a").toggle();
+		} else {
+			$("#login_messages").effect("highlight", {}, 500);
 		}
 	}
 	
@@ -82,10 +88,8 @@
 				data : {limit: 20},
 				dataType: "xml",
 				error: function(jqXHR, textStatus, errorThrown) {
-					handleAjaxError(jqXHR);
-					console.log("Proposal error text status: "+textStatus);
-					console.log("Proposal error jyXHR: "+jqXHR);
-					console.log("Proposal error thrown: "+errorThrown);
+					handleAjaxError(jqXHR);	
+					$("#loadingDiv").hide();
 				},
 				context: $("#suggestions"),
 				beforeSend: function(xhr) {
@@ -169,7 +173,11 @@
 		$("#step2").prepend("<span>"+msg.step2+"</span>");
 		$("#step3").prepend("<span>"+msg.step3+"</span>");
 		$("#copy").empty().append(msg.copy);
-		$("#clear").empty().append(msg.clear);			
+		$("#clear").empty().append(msg.clear);	
+		
+		$('#loginform').submit(function() {
+		  return false;
+		});
 
 		login($.cookie('token'),$.cookie('secret'),
 			function(token,secret) {
@@ -180,6 +188,8 @@
 				console.log("successfull login with token "+token);																	
 				$("#userWelcome").empty().append(msg.member.loggedIn);
 				$("#login_messages").empty().append(msg.member.loggedIn);
+				$("div#panel").slideUp("slow");
+				$("#toggle a").toggle();
 				loggedIn = true;
 			}
 		);						
@@ -191,7 +201,7 @@
 						// display authentication failure message
 						$("#login_messages").empty().append(msg.member.authenticationFailed);
 					} else {
-						$("#login_messages").empty().append(msg.member.authenticationError);
+						$("#login_messages").empty().append(msg.app.problem);
 					}			
 					$("#login_messages").effect("highlight", {}, 500);
 				},
@@ -230,10 +240,9 @@
 				type: "POST",
 				url: "/credentials",
 				data : {email: $("#email").val()},								
-				error: function(jqXHR, textStatus, errorThrown) {
-					//TODO error handling and login popup if authentication failure
+				error: function(jqXHR, textStatus, errorThrown) {						$("#login_messages").empty().append(msg.member.sign_up.error);
+				$("#login_messages").effect("highlight", {}, 500);
 					console.log("register error text status: "+textStatus);
-					console.log("register error jyXHR: "+jqXHR);
 					console.log("register error thrown: "+errorThrown);
 				},												
 				success: function( response ) {							
@@ -255,6 +264,7 @@
 				$("#toggle a").toggle();
 			} else {
 				//alert(msg.member.welcome);
+				$("#login_messages").empty().append(msg.member.welcome);
 				$("#login_messages").effect("highlight", {}, 500);
 			}
 		});												
