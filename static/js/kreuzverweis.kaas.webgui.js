@@ -24,7 +24,13 @@
 				},
 				success: function( xmlResponse ) {             
 					successFunc.call(xmlResponse,token,secret);
-				}
+				},
+				beforeSend: function () {					
+					$("#loginAction").show();
+				},
+				complete: function () {
+					$("#loginAction").hide();
+				}				
 		});		
 	}
 	
@@ -32,11 +38,14 @@
 		if (jqXHR.status == 401) {
 			// user unauthorized
 			console.log("not authorized");
-			if ($("#toggle a").attr("id") == 'open') {
+			if ($("#toggle a:hidden").attr("id") == 'close') {
+				// show panel
 				$("div#panel").slideDown("slow");
 				$("#toggle a").toggle();
 			}
+			$("#login_messages").empty().append(msg.member.welcome);
 			$("#userWelcome").empty().append(msg.member.notLoggedIn);
+			setRecMethod();
 		} else {
 			console.log(msg.member.authenticationError);			
 		}
@@ -170,7 +179,7 @@
 			function(token,secret) {
 				console.log("successfull login with token "+token);																	
 				$("#userWelcome").empty().append(msg.member.loggedIn);
-				$("#panel > div > div:first ").empty().append(msg.member.loggedIn);
+				$("#login_messages").empty().append(msg.member.loggedIn);
 				loggedIn = true;
 			}
 		);						
@@ -192,7 +201,7 @@
 					$("div#panel").slideUp("slow");
 					$("#toggle a").toggle();
 					$("#userWelcome").empty().append(msg.member.loggedIn);
-					$("#panel > div > div:first ").empty().append(msg.member.loggedIn);
+					$("#login_messages").empty().append(msg.member.loggedIn);
 					loggedIn = true;
 				}
 			);		
