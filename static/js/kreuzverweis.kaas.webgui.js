@@ -48,12 +48,12 @@
 			// show panel
 			$("div#panel").slideDown("slow",
 				function () {
-					$("#login_messages").effect("highlight", {}, 500);
+					$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 				}
 			);
 			$("#toggle a").toggle();
 		} else {
-			$("#login_messages").effect("highlight", {}, 500);
+			$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 		}
 	}
 	
@@ -203,7 +203,7 @@
 					} else {
 						$("#login_messages").empty().append(msg.app.problem);
 					}			
-					$("#login_messages").effect("highlight", {}, 500);
+					$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 				},
 				function(token,secret) {
 					$("#login_messages").empty();
@@ -241,7 +241,7 @@
 				url: "/credentials",
 				data : {email: $("#email").val()},								
 				error: function(jqXHR, textStatus, errorThrown) {						$("#login_messages").empty().append(msg.member.sign_up.error);
-				$("#login_messages").effect("highlight", {}, 500);
+				$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 					console.log("register error text status: "+textStatus);
 					console.log("register error thrown: "+errorThrown);
 				},												
@@ -265,7 +265,7 @@
 			} else {
 				//alert(msg.member.welcome);
 				$("#login_messages").empty().append(msg.member.welcome);
-				$("#login_messages").effect("highlight", {}, 500);
+				$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 			}
 		});												
 			
