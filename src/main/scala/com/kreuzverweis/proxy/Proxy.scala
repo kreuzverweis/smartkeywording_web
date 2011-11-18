@@ -2,9 +2,7 @@
  *
  */
 package com.kreuzverweis.proxy
-import unfiltered.request._
 import unfiltered.response.ResponseString
-import unfiltered.netty.ServerErrorResponse
 import dispatch._
 import oauth._
 import OAuth._
@@ -14,7 +12,8 @@ import unfiltered.response.InternalServerError
 import unfiltered.response.BadRequest
 import unfiltered.response.Ok
 import unfiltered.response.MethodNotAllowed
-import unfiltered.filter.Plan
+import unfiltered.filter._
+import unfiltered.request._
 
 /**
  * @author carsten
