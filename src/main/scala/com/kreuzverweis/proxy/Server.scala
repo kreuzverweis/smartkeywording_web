@@ -9,8 +9,8 @@ object Server {
 
   def main(args: Array[String]) {
     val port = if (args.headOption.isDefined) args.head.toInt else 8888
-    unfiltered.netty.Http(port)
-      .handler(Proxy)
+    unfiltered.jetty.Http(port)
+      .filter(Proxy)
       .resources((new File("static")).toURI().toURL())
       .run { s =>
         logger.info("starting unfiltered app at localhost on port %s"

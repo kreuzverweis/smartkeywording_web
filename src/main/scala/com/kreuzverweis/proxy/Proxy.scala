@@ -2,7 +2,6 @@
  *
  */
 package com.kreuzverweis.proxy
-import unfiltered.netty.cycle._
 import unfiltered.request._
 import unfiltered.response.ResponseString
 import unfiltered.netty.ServerErrorResponse
@@ -15,12 +14,13 @@ import unfiltered.response.InternalServerError
 import unfiltered.response.BadRequest
 import unfiltered.response.Ok
 import unfiltered.response.MethodNotAllowed
+import unfiltered.filter.Plan
 
 /**
  * @author carsten
  *
  */
-object Proxy extends Plan with ThreadPool with ServerErrorResponse {
+object Proxy extends Plan {
   val h = new Http
   val prefix = url("http://kvnode1.uni-koblenz.de:8080/keywords/by-prefix")
   val proposal = url("http://kvnode1.uni-koblenz.de:8080/keywords/proposals")
@@ -33,29 +33,24 @@ object Proxy extends Plan with ThreadPool with ServerErrorResponse {
 		    val Params(form) = req
 		    println("form: %s".format(form.toString))
 		    if (!form.isDefinedAt("email")) {
-//		      req.respond(BadRequest ~> ResponseString("No email specified."))
 		      BadRequest ~> ResponseString("No email specified.")
 		    } else {
   		    h(credentials << Map("email" -> form("email").head)  >- { res =>
-//  		      req.respond(Ok)
   		      Ok
   		    })
 	      }
 	    } catch {
 	      case e => {
-//	       req.respond(InternalServerError ~> ResponseString(e.getMessage()))
 	       InternalServerError ~> ResponseString(e.getMessage())
 	      }
 	    }
 	  }
 	  case req @ GET(Path(Seg("by-prefix" :: term :: Nil))) & Cookies(cookies) & Params(params) => {
-	    val limit = if (params.isDefinedAt("limit")) Map("limit" -> params("limit").head) else Map[String, String]()
 	    getToken(cookies) match {
 	      case Some(token) =>
-		    	val a = prefix / term <<? limit
+		    	val a = prefix / term <<? translateParameters(params)
 		    	try {
 			    	h(a <@ (consumer, token) >- { res =>
-//			    		req.respond(ResponseString(res))
 			    		ResponseString(res)
 			    	})
 	    		} catch {
@@ -66,10 +61,9 @@ object Proxy extends Plan with ThreadPool with ServerErrorResponse {
 	    }
 	  }
 	  case req @ GET(Path(Seg("proposals" :: terms :: Nil))) & Cookies(cookies) & Params(params) => {
-	    val limit = if (params.isDefinedAt("limit")) Map("limit" -> params("limit").head) else Map[String, String]()
 	    getToken(cookies) match {
 	      case Some(token) =>
-			    val a = proposal / terms <<? limit
+			    val a = proposal / terms <<? translateParameters(params)
 			    val r = a <@ (consumer, token)
 		    	try {
 				    h(r >- { res =>
@@ -83,6 +77,11 @@ object Proxy extends Plan with ThreadPool with ServerErrorResponse {
 	    }
 	  }
 	}
+  
+  def translateParameters(params: Map[String, Seq[String]]): Traversable[(String, String)] = for {
+    pk <- params.keys
+    v <- params(pk)
+  } yield (pk, v)
   
   def getToken(cookies: Map[String, Option[Cookie]]): Option[Token] = { 
     for {
