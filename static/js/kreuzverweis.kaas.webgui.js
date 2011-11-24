@@ -35,26 +35,26 @@
 	}
 	
 	function handleAjaxError(jqXHR) {		
-		if (jqXHR.status == 401) {
+		if (jqXHR.status == 401) {			
 			// user unauthorized
 			console.log("not authorized");						
 			$("#userWelcome").empty().append(msg.member.notLoggedIn);
 			$("#login_messages").empty().append(msg.member.welcome);
+			if ($("#toggle a:hidden").attr("id") == 'close') {
+				// show panel
+				$("div#panel").slideDown("slow",
+					function () {
+						$("#login_messages").effect("highlight", {color: "#505050"}, 500);
+					}
+				);
+				$("#toggle a").toggle();
+			} else {
+				$("#login_messages").effect("highlight", {color: "#505050"}, 500);
+			}		
 		} else {
 			console.log("error occurred");			
-			$("#login_messages").empty().append(msg.app.problem);
+			//$("#login_messages").empty().append(msg.app.problem);
 		}				
-		if ($("#toggle a:hidden").attr("id") == 'close') {
-			// show panel
-			$("div#panel").slideDown("slow",
-				function () {
-					$("#login_messages").effect("highlight", {color: "#505050"}, 500);
-				}
-			);
-			$("#toggle a").toggle();
-		} else {
-			$("#login_messages").effect("highlight", {color: "#505050"}, 500);
-		}
 	}
 	
 	function getKeywordCSV() {
@@ -93,17 +93,60 @@
 				},
 				context: $("#suggestions"),
 				beforeSend: function(xhr) {
-					$("#loadingDiv").show();
+					if (selected.length > 0) {
+						$("#loadingDiv").show();
+						while (propReqs.length > 0) {
+							var req = propReqs.pop();
+							console.log("aborting outdated proposal request "+req);
+							req.abort();
+						}
+						propReqs.push(xhr);
+					} else {
+						xhr.abort();
+						$("#suggestions").empty();
+						console.log("no keywords given for proposals");
+					}
 				},
 				complete: function() {
 					$("#loadingDiv").hide();
 				},
-				success: function( xmlResponse ) {							
-					$( "keyword", xmlResponse ).each(function() {
-						addSuggestion(
-							$( "label", this ).text(),
-							$( "score", this ).text());								
-					});							
+				success: function( xmlResponse ) {	
+					//propReqs.pop();
+					$("#loadingDiv").hide();
+					var newSuggestions = new Array();
+					$("keyword", xmlResponse).each(function () { 	
+						newSuggestions.push($("label",this).text());	
+					});					
+					// remove invalid ones
+					$("#suggestions > span").each(function () {
+						//console.log("checking "+this.text());
+						var index = $.inArray($(this).text(),newSuggestions)
+						//console.log("index is "+index);
+						if (index > -1) {
+							// remove it from newLabels
+							//console.log("suggested label already exists: "+$(this).text());							
+							newSuggestions.splice(index,1);							
+						} else {
+							// make it invisible
+							console.log("removing label that is no longer valid: "+$(this).text());
+							$(this).css("visibility","hidden");
+							suggestions.splice($.inArray($(this).text(),suggestions),1);
+						}
+					});
+					// add new ones
+					if (newSuggestions.length == 0) {
+						console.log("no new suggestions to add");
+					}
+					for (l in newSuggestions) {
+						// check if label already in list
+						// if yes
+						console.log("adding new suggestion "+newSuggestions[l]);
+						ui = createKeywordUIItem(newSuggestions[l]);
+						//console.log(ui);
+						//$(ui).css("display","none");
+						$(ui).appendTo($("#suggestions")).fadeIn(2000);
+						suggestions.push(newSuggestions[l]);																								
+					}							
 				}
 		});
 	}	
@@ -112,21 +155,22 @@
 		if ($(ui).parent()[0] == $("#suggestions")[0]) {
 				suggestions.splice($.inArray($(ui).text(),suggestions),1);
 				selected.push($(ui).text());					$(ui).clone().css("display","none").appendTo($("#selected")).fadeIn(1000);
-				$(ui).fadeOut(1000, function () {					
-						$(ui).remove();
+				$(ui).fadeOut(1000, function () {
+						$(ui).css("display","inline");
+						$(ui).css("visibility","hidden");//remove();
 					}
 				);					
 				getProposals();
 		} else if ($(ui).parent()[0] == $("#selected")[0])  {
 			selected.splice($.inArray($(ui).text(),selected),1);
-			addSuggestion($(ui).text(),$(ui).attr("score"));
+			//addSuggestion($(ui).text(),$(ui).attr("score"));
 			$(ui).fadeOut(1000, 
 				function () {
 					$(ui).remove();
 				});			    
 			getProposals();
 		} else { //if it has been autocompleted or entered manually	
-			$(ui).css("display","none");
+			$(ui).css("visibility","none");
 			$(ui).appendTo($("#selected"));
 			$(ui).fadeIn(1000);				
 			selected.push($(ui).text());
@@ -139,7 +183,7 @@
 	
 	function createKeywordUIItem(label,score) {
 		return $('<span>').attr({
-			class: "ui-widget-content",
+			class: "ui-widget-content",			
 			score: score}).text(label);
 	}
 	
@@ -223,16 +267,21 @@
 				
 		$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {		
 			if (options.url.indexOf("/by-prefix") === 0) {
-				for (i in complReqs) {
-					complReqs[i].abort();
+				while (complReqs.length > 0) {
+					var req = complReqs.pop();
+					console.log("aborting completion request "+req);
+					req.abort();
 				}
 				complReqs.push(jqXHR);
-			} else if (options.url.indexOf("/proposals") === 0) {
-				for (i in propReqs) {
-					propReqs[i].abort();
+			} 
+			/*else if (options.url.indexOf("/proposals") === 0) {
+				while (propReqs.length > 0) {
+					var req = propReqs.pop();
+					console.log("aborting proposal request "+req);
+					req.abort();
 				}
 				propReqs.push(jqXHR);
-			}
+			}*/
 		});		
 		
 		$("#member_register").click(function () {
