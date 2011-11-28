@@ -146,7 +146,37 @@
 						//$(ui).css("display","none");
 						$(ui).appendTo($("#suggestions")).fadeIn(2000);
 						suggestions.push(newSuggestions[l]);																								
-					}							
+					}	
+					// check for empty lines and remove them
+					var markedForRemoval = [];
+					var currentLineTop = $("#suggestions > span:first").offset().top;
+					var removeLine = true;
+					$("#suggestions > span").each(function () {						
+						if ($(this).offset().top != currentLineTop) {
+							// new line
+							if (removeLine) {
+								// last line was completely hidden
+								//console.log("removing line with hidden keywords: "+markedForRemoval);
+								for (i in markedForRemoval) {
+									$(markedForRemoval[i]).remove();
+								}
+							}
+							markedForRemoval = [];
+							currentLineTop = $(this).offset().top;
+							removeLine = true;
+						}
+						if ($(this).offset().top == currentLineTop) {
+							// still in line
+							if (removeLine) {
+								if ($(this).css('visibility') == 'hidden') {
+									//console.log("marking "+$(this).text()+" for removal");
+									markedForRemoval.push($(this));
+								} else {
+									removeLine = false;
+								}
+							}
+						} 		
+					});
 				}
 		});
 	}	
@@ -213,7 +243,7 @@
 		$("#open").empty().append(msg.member.open);
 		$("#close").empty().append(msg.member.close);
 		
-		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
+		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
 		$("#step2").prepend("<span>"+msg.step2+"</span>");
 		$("#step3").prepend("<span>"+msg.step3+"</span>");
 		$("#copy").empty().append(msg.copy);
