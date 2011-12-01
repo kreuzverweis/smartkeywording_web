@@ -9,6 +9,7 @@ object Server {
 
   def main(args: Array[String]) {
     val port = if (args.headOption.isDefined) args.head.toInt else 8888
+    val baseUri = if (args.drop(1).headOption.isDefined) Proxy.server = args.drop(1).head
     unfiltered.jetty.Http(port)
       .filter(Proxy)
       .resources((new File("static")).toURI().toURL())
