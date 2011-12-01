@@ -1,0 +1,23 @@
+body {
+	font-family: sans-serif;
+}
+
+.button {
+	background: none repeat scroll 0 0 #E7E7E7;
+    border: 1px solid silver;
+    font-size: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.clickable {color: #0066DD; cursor:pointer;}
+.tooltip {
+			display:none;
+			background: gray;	
+			border-style: solid;
+			border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-color: gray;			
+			padding:5px;
+			color:#fff;	
+		}

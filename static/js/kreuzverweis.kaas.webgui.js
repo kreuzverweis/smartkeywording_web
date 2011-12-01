@@ -13,8 +13,8 @@
 	
 	function login(token,secret,errorFunc,successFunc) {
 		// set cookies
-		$.cookie('token', token);
-		$.cookie('secret', secret);			
+		$.cookie('token', token, { expires: 365 });
+		$.cookie('secret', secret, { expires: 365 });			
 		// send credentials
 		$.ajax({
 				url: "/by-prefix/"+encodeURIComponent("Köln")+"?limit=1",
@@ -58,14 +58,13 @@
 	}
 	
 	function getKeywordCSV() {
-		var selectedKeywords = "";			
-		$('#selected > span').each(function(index) {
-			if (selectedKeywords == "") {
-				selectedKeywords = $(this).text() ;
-			} else {
-				selectedKeywords = selectedKeywords + "," + $(this).text(); 
-			}
-		});			
+		var selectedKeywords = "";	
+		for (i in selected) {
+			if (selectedKeywords == "")
+				selectedKeywords=selected[i];
+			else
+				selectedKeywords = selectedKeywords + "," + selected[i];
+		}		
 		return selectedKeywords;
 	}
 		
@@ -123,7 +122,8 @@
 						var index = $.inArray($(this).text(),newSuggestions)
 						//console.log("index is "+index);
 						if (index > -1) {
-							// remove it from newLabels
+							// remove it from newLabels and make it visible
+							$(this).css("visibility","visible");
 							//console.log("suggested label already exists: "+$(this).text());							
 							newSuggestions.splice(index,1);							
 						} else {
@@ -370,9 +370,11 @@
 			$("#suggestions > span").fadeOut(500, function () {
 				$(this).remove();
 				});
+			$("#suggestions").empty();
 			$("#selected > span").fadeOut(500, function () {
 				$(this).remove();
 			});
+			$("#selected").empty();
 			$(this).toggle(200);
     	});
 
