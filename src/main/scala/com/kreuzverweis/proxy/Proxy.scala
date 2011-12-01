@@ -21,11 +21,11 @@ import unfiltered.request._
  */
 object Proxy extends Plan {
   val h = new Http
-  var server: String = "http://kvnode1.uni-koblenz.de:8080"
+  var server: Request = url("http://kvnode1.uni-koblenz.de:8080/")
   val consumer = Consumer("kreuzverweis-web", "Yohv9aiQuaigiasheiSo")
-  lazy val prefix = url(server + "/keywords/by-prefix")
-  lazy val proposal = url(server + "/keywords/proposals")
-  lazy val credentials = url(server + "/oauth/web-credentials")
+  lazy val prefix = server / "keywords/by-prefix"
+  lazy val proposal = server / "keywords/proposals"
+  lazy val credentials = server / "oauth/web-credentials"
   
 	def intent = {
 	  case req @ POST(Path("/credentials")) => {
