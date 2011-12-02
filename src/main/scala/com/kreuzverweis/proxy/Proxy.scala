@@ -20,7 +20,7 @@ import unfiltered.request._
  *
  */
 object Proxy extends Plan {
-  val h = new Http
+  val h = new Http with thread.Safety
   var server: Request = url("http://kvnode1.uni-koblenz.de:8080/")
   val consumer = Consumer("kreuzverweis-web", "Yohv9aiQuaigiasheiSo")
   lazy val prefix = server / "keywords/by-prefix"
