@@ -24,17 +24,18 @@
 	<script src="js/jquery.cookie.js" type="text/javascript"></script>
 	<script src="js/jquery.tools.min.js" type="text/javascript"></script>
 	<script src="js/kreuzverweis.kaas.webgui.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-	</script>
-	<script type="text/javascript">
-		try{
-			var pageTracker = _gat._getTracker("UA-5276354-4");
-			pageTracker._setDomainName("none");
-			pageTracker._setAllowLinker(true);
-			pageTracker._trackPageview();
-		} catch(err) {}
+	<script type="text/javascript">		
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-5276354-4']);
+		  _gaq.push(['_setDomainName', 'none']);
+		  _gaq.push(['_setAllowLinker', true]);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
 	</script>		
 </head>
 <body>
@@ -43,7 +44,7 @@
 		<div id="panel">
 			<div class="content clearfix">
 				<div class="left">
-					<a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a>					
+					<a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a>					
 				</div>
 				<div class="left">
 					<br/>
@@ -89,7 +90,7 @@
 	</div> <!--panel -->
 
 	<div style="width:500px;margin-top:100px; margin-left: auto ; margin-right: auto; font-size:14px;color:#505050;">	
-		<h1 style="align:center;text-align:left;">Keywording<img style="margin:0px;padding:0px;margin-left:-15px;vertical-align:super;" src="images/beta.png"/> by <a href="http://kreuzverweis.com"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a></h1>	
+		<h1 style="align:center;text-align:left;">Keywording<img style="margin:0px;padding:0px;margin-left:-15px;vertical-align:super;" src="images/beta.png"/> by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a></h1>	
 
 			<div id="step1" class="ui-widget" style="width:100%;margin-top:45px;text-align:left;">
 				<div id="step1_label"></div>
@@ -97,9 +98,9 @@
 			</div>
 					
 			<div id="step2" class="ui-widget" style="width: 100%;margin-top:45px;">
+				<span id="loadingDiv" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></span>
 				<br/>
 				<div id="suggestions" style="margin-top:10px;width:100%;overflow:auto;"></div>					
-				<div id="loadingDiv" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></div>
 			</div>
 			
 			<div id="step3" class="ui-widget" style="width: 100%;margin-top:45px;">				
@@ -112,5 +113,6 @@
 				<button id="clear" class="button" style="display:none;">Clear</button>
 			</div>
 	</div>
+		
 </body>
 </html>

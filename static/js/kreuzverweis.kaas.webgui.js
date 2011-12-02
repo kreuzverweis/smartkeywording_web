@@ -4,6 +4,7 @@
 	var complReqs = new Array();
 	var propReqs = new Array();
 	var loggedIn = false;
+	var pause = false;
 	
 	jQuery.i18n.properties({
 		name:'messages', 
@@ -34,27 +35,36 @@
 		});		
 	}
 	
-	function handleAjaxError(jqXHR) {		
-		if (jqXHR.status == 401) {			
-			// user unauthorized
-			console.log("not authorized");						
-			$("#userWelcome").empty().append(msg.member.notLoggedIn);
-			$("#login_messages").empty().append(msg.member.welcome);
-			if ($("#toggle a:hidden").attr("id") == 'close') {
-				// show panel
-				$("div#panel").slideDown("slow",
-					function () {
-						$("#login_messages").effect("highlight", {color: "#505050"}, 500);
-					}
-				);
-				$("#toggle a").toggle();
-			} else {
-				$("#login_messages").effect("highlight", {color: "#505050"}, 500);
-			}		
-		} else {
-			console.log("error occurred");			
-			//$("#login_messages").empty().append(msg.app.problem);
-		}				
+	function handleAjaxError(jqXHR) {
+		switch (jqXHR.status) {
+			case 401:
+				// user unauthorized
+				console.log("not authorized");						
+				$("#userWelcome").empty().append(msg.member.notLoggedIn);
+				$("#login_messages").empty().append(msg.member.welcome);
+				if ($("#toggle a:hidden").attr("id") == 'close') {
+					// show panel
+					$("div#panel").slideDown("slow",
+						function () {
+							$("#login_messages").effect("highlight", {color: "#505050"}, 500);
+						}
+					);
+					$("#toggle a").toggle();
+				} else {
+					$("#login_messages").effect("highlight", {color: "#505050"}, 500);
+				}
+				break;
+			case 500:
+				// internal server error
+				console.log("internal server error occurred");				
+				break;
+			case 0:
+				// abort
+				break;
+			default:
+				console.log("error "+jqXHR.status+" occurred: "+jqXHR.statusText);
+				break;
+		} 				
 	}
 	
 	function getKeywordCSV() {
@@ -66,52 +76,16 @@
 				selectedKeywords = selectedKeywords + "," + selected[i];
 		}		
 		return selectedKeywords;
-	}
-		
-	function addSuggestion(label,score) {
-		// check if item is already suggested or selected
-		if (($.inArray(label,suggestions) == -1) && ($.inArray(label,selected) == -1)) {
-			// if it is new then add it
-			ui = createKeywordUIItem(label,score);
-			$(ui).css("display","none");
-			$(ui).appendTo($("#suggestions")).fadeIn(2000);
-			suggestions.push(label);				
-		} else {
-			//console.log(label + " already included");
-		}
-	}
+	}			
 	
-	function getProposals() {					
-		$.ajax({
-				url: "/proposals/"+encodeURIComponent(getKeywordCSV()),
+	function getProposals() {	
+		if (selected.length > 0) {
+			$("#loadingDiv").show();		
+			var url = "/proposals/"+encodeURIComponent(getKeywordCSV());
+			$.ajax({
+				url: url,
 				data : {limit: 20},
-				dataType: "xml",
-				error: function(jqXHR, textStatus, errorThrown) {
-					handleAjaxError(jqXHR);	
-					$("#loadingDiv").hide();
-				},
-				context: $("#suggestions"),
-				beforeSend: function(xhr) {
-					if (selected.length > 0) {
-						$("#loadingDiv").show();
-						while (propReqs.length > 0) {
-							var req = propReqs.pop();
-							console.log("aborting outdated proposal request "+req);
-							req.abort();
-						}
-						propReqs.push(xhr);
-					} else {
-						xhr.abort();
-						$("#suggestions").empty();
-						console.log("no keywords given for proposals");
-					}
-				},
-				complete: function() {
-					$("#loadingDiv").hide();
-				},
-				success: function( xmlResponse ) {	
-					//propReqs.pop();
-					$("#loadingDiv").hide();
+				success: function( xmlResponse ) {						
 					var newSuggestions = new Array();
 					$("keyword", xmlResponse).each(function () { 	
 						newSuggestions.push($("label",this).text());	
@@ -128,7 +102,7 @@
 							newSuggestions.splice(index,1);							
 						} else {
 							// make it invisible
-							console.log("removing label that is no longer valid: "+$(this).text());
+							//console.log("removing label that is no longer valid: "+$(this).text());
 							$(this).css("visibility","hidden");
 							suggestions.splice($.inArray($(this).text(),suggestions),1);
 						}
@@ -140,45 +114,57 @@
 					for (l in newSuggestions) {
 						// check if label already in list
 						// if yes
-						console.log("adding new suggestion "+newSuggestions[l]);
-						ui = createKeywordUIItem(newSuggestions[l]);
-						//console.log(ui);
-						//$(ui).css("display","none");
+						//console.log("adding new suggestion "+newSuggestions[l]);
+						ui = createKeywordUIItem(newSuggestions[l]);						
 						$(ui).appendTo($("#suggestions")).fadeIn(2000);
 						suggestions.push(newSuggestions[l]);																								
 					}	
-					// check for empty lines and remove them
-					var markedForRemoval = [];
-					var currentLineTop = $("#suggestions > span:first").offset().top;
-					var removeLine = true;
-					$("#suggestions > span").each(function () {						
-						if ($(this).offset().top != currentLineTop) {
-							// new line
-							if (removeLine) {
-								// last line was completely hidden
-								//console.log("removing line with hidden keywords: "+markedForRemoval);
-								for (i in markedForRemoval) {
-									$(markedForRemoval[i]).remove();
+					var suggs = $("#suggestions > span:first");
+					if (suggs.length>0) {
+						// check for empty lines and remove them
+						var markedForRemoval = [];
+						var currentLineTop = $(suggs[0]).offset().top;
+						var removeLine = true;
+						$("#suggestions > span").each(function () {						
+							if ($(this).offset().top != currentLineTop) {
+								// new line
+								if (removeLine) {
+									// last line was completely hidden
+									//console.log("removing line with hidden keywords: "+markedForRemoval);
+									for (i in markedForRemoval) {
+										$(markedForRemoval[i]).remove();
+									}
 								}
+								markedForRemoval = [];
+								currentLineTop = $(this).offset().top;
+								removeLine = true;
 							}
-							markedForRemoval = [];
-							currentLineTop = $(this).offset().top;
-							removeLine = true;
-						}
-						if ($(this).offset().top == currentLineTop) {
-							// still in line
-							if (removeLine) {
-								if ($(this).css('visibility') == 'hidden') {
-									//console.log("marking "+$(this).text()+" for removal");
-									markedForRemoval.push($(this));
-								} else {
-									removeLine = false;
+							if ($(this).offset().top == currentLineTop) {
+								// still in line
+								if (removeLine) {
+									if ($(this).css('visibility') == 'hidden') {
+										//console.log("marking "+$(this).text()+" for removal");
+										markedForRemoval.push($(this));
+									} else {
+										removeLine = false;
+									}
 								}
-							}
-						} 		
-					});
+							} 		
+						});	
+					}					
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					handleAjaxError(jqXHR);						
+				},
+				complete: function() {
+				if (propReqs.length == 1)
+					$("#loadingDiv").hide();
 				}
-		});
+			});
+		} else {
+			console.log("not requesting proposals as no keyword is selected");
+			$("#suggestions").empty();
+		}
 	}	
 		
 	function deSelect(ui) {
@@ -192,8 +178,7 @@
 				);					
 				getProposals();
 		} else if ($(ui).parent()[0] == $("#selected")[0])  {
-			selected.splice($.inArray($(ui).text(),selected),1);
-			//addSuggestion($(ui).text(),$(ui).attr("score"));
+			selected.splice($.inArray($(ui).text(),selected),1);			
 			$(ui).fadeOut(1000, 
 				function () {
 					$(ui).remove();
@@ -220,16 +205,21 @@
 	function setRecMethod() {
 		var method = $.cookie("split");
 		if (method == "dbp37i_noloc") {
-			$("#recmethod2").attr("checked","");
-			//$("#recmethod1").removeAttr("checked");
+			$("#recmethod2").attr("checked","");			
 		} else { // set method to abstracts_dbp37i
 			$("#recmethod1").attr("checked","true");
-			//$("#recmethod2").removeAttr("checked");
 			$.cookie("split","abstracts_dbp37i");
 		}
 	}
 	
-	$(function() {	
+	function sleep(milliseconds) {
+		var start = new Date().getTime();
+		while ((new Date().getTime() - start) < milliseconds){
+		// Do nothing
+		}
+	}
+	
+	$(function() {			
 		$("#login_messages").empty().append(msg.member.welcome);
 		$("#member_login").empty().append(msg.member.login);
 		$("#member_userid").empty().append(msg.member.userid);
@@ -294,33 +284,36 @@
 		$("input[name='recmethod']").click(function () {
 			$.cookie('split',this.value);
 		});
-				
+		
+		
 		$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {		
 			if (options.url.indexOf("/by-prefix") === 0) {
 				while (complReqs.length > 0) {
 					var req = complReqs.pop();
-					console.log("aborting completion request "+req);
-					req.abort();
+					console.log("aborting completion request "+req.options.url);
+					req.jqxhr.abort();
 				}
-				complReqs.push(jqXHR);
+				complReqs.push({options: options,jqxhr: jqXHR});
 			} 
-			/*else if (options.url.indexOf("/proposals") === 0) {
+			if (options.url.indexOf("/proposals") === 0) {
 				while (propReqs.length > 0) {
 					var req = propReqs.pop();
-					console.log("aborting proposal request "+req);
-					req.abort();
+					console.log("aborting proposal request "+req.options.url);
+					req.jqxhr.abort();
 				}
-				propReqs.push(jqXHR);
-			}*/
+				propReqs.push({options: options,jqxhr: jqXHR});
+			} 
 		});		
+		
 		
 		$("#member_register").click(function () {
 			$.ajax({
 				type: "POST",
 				url: "/credentials",
 				data : {email: $("#email").val()},								
-				error: function(jqXHR, textStatus, errorThrown) {						$("#login_messages").empty().append(msg.member.sign_up.error);
-				$("#login_messages").effect("highlight", {color: "#505050"}, 500);
+				error: function(jqXHR, textStatus, errorThrown) {								
+					$("#login_messages").empty().append(msg.member.sign_up.error);
+					$("#login_messages").effect("highlight", {color: "#505050"}, 500);
 					console.log("register error text status: "+textStatus);
 					console.log("register error thrown: "+errorThrown);
 				},												
@@ -392,8 +385,8 @@
 		});				
 		
 		$( "#keyword" ).autocomplete({
-			source: function( request, response ) {
-				$.ajax({
+			source: function( request, response ) {					
+				$.ajax({					
 					url: "/by-prefix/"+encodeURIComponent(request.term)+"?limit=10",
 					dataType: "xml",
 					error: function(jqXHR, textStatus, errorThrown) {	
@@ -401,15 +394,19 @@
 					},
 					complete : function () {
 						$( "#keyword" ).removeClass("ui-autocomplete-loading");
-						},
-					success: function( xmlResponse ) {                                              
-								response($( "keyword", xmlResponse ).map(function() {
-									return {
-										value: $( "label", this ).text() + ( $.trim( $( "synonyms", this ).text() ) || ""),
-										score: $( "score", this ).text()
-									};
-								}));
-                             }
+					},
+					success: function( xmlResponse, jqxhr ) { 		
+						if (complReqs[complReqs.length-1].options.url == this.url) {							
+							response($( "keyword", xmlResponse ).map(function() {
+								return {
+									value: $( "label", this ).text() + ( $.trim( $( "synonyms", this ).text() ) || ""),
+									score: $( "score", this ).text()
+								};						
+							}));
+						} else {
+							this.abort();
+						}
+					 }					 
                 })
             },       		
 			minLength: 3,	
@@ -426,5 +423,5 @@
 			close: function() {
 				$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
 			}
-		});								
+		});			
 	});
