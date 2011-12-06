@@ -221,6 +221,7 @@
 	
 	$(function() {			
 		$("#login_messages").empty().append(msg.member.welcome);
+		$("#login").attr('value',msg.button.login);
 		$("#member_login").empty().append(msg.member.login);
 		$("#member_userid").empty().append(msg.member.userid);
 		$("#member_pwd").empty().append(msg.member.pwd);
@@ -234,8 +235,8 @@
 		$("#close").empty().append(msg.member.close);
 		
 		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
-		$("#step2").prepend("<span>"+msg.step2+"</span>");
-		$("#step3").prepend("<span>"+msg.step3+"</span>");
+		$("#step2_label").prepend(msg.step2);
+		$("#step3_label").append(msg.step3);
 		$("#copy").empty().append(msg.copy);
 		$("#clear").empty().append(msg.clear);	
 		

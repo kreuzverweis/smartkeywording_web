@@ -1,5 +1,10 @@
 body {
 	font-family: sans-serif;
+	color:#505050;
+}
+
+h3 {
+	font-weight: normal;
 }
 
 .button {
@@ -11,6 +16,7 @@ body {
 }
 
 .clickable {color: #0066DD; cursor:pointer;}
+
 .tooltip {
 			display:none;
 			background: gray;	

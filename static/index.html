@@ -46,17 +46,18 @@
 				<div class="left">
 					<a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a>					
 				</div>
-				<div class="left">
+				<div class="middle">
 					<br/>
-					<h2 id="member_sign_up">Sign Up</h2>
+					<h3 id="member_sign_up">Sign Up</h3>
 						<!--<form method="POST" action="http://data.kreuzverweis.com/oauth/tag-credentials">-->
 						<label id="member_enter_your_email" for="email">Enter you email below to receive your login credentials:</label>
 						<input class="field" type="text" size="30" id="email">
+						<br/>
 						<input class="button" type="submit" id="member_register" value="Register" name="submit"><br/><br/><br/>
 						<!--/form>-->
 					<!-- Login Form -->
 					<form id="loginform" class="clearfix">
-						<h2 id="member_login">Member Login</h2>
+						<h3 id="member_login">Member Login</h3>
 						<label id="member_userid" for="log">Username:</label><br/>
 						<input class="field" type="text" name="log" id="token" size="23" /><br/><br/>
 						<label id="member_pwd" for="pwd">Password:</label><br/>
@@ -69,7 +70,8 @@
 						<div id="loginAction" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></div>
 						<!--<a class="lost-pwd" href="#">Lost your password?</a>-->
 					</form>
-					<div id="login_messages"></div>
+					<br/>
+					<div id="login_messages" style="color:#FE7D09;font-weight: bold;"></div>
 				</div>				
 			</div>
 		</div> <!-- /login -->	
@@ -89,28 +91,29 @@
 	
 	</div> <!--panel -->
 
-	<div style="width:500px;margin-top:100px; margin-left: auto ; margin-right: auto; font-size:14px;color:#505050;">	
+	<div style="width:600px;margin-top:100px; margin-left: auto ; margin-right: auto;">	
 		<h1 style="align:center;text-align:left;">Keywording<img style="margin:0px;padding:0px;margin-left:-15px;vertical-align:super;" src="images/beta.png"/> by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:48px;vertical-align:-4%;"></a></h1>	
 
-			<div id="step1" class="ui-widget" style="width:100%;margin-top:45px;text-align:left;">
-				<div id="step1_label"></div>
-				<input type="text" id="keyword"  style="width:487px;margin-top:10px;"/>
+			<div id="step1" style="width:100%;margin-top:45px;text-align:left;">
+				<h3 id="step1_label"></h3>
+				<input type="text" id="keyword"  style="width:520px;font-size: 100%;margin-top:-10px;"/>
 			</div>
 					
-			<div id="step2" class="ui-widget" style="width: 100%;margin-top:45px;">
-				<span id="loadingDiv" style="display:none;"><img src="images/ui-anim_basic_16x16.gif"/></span>
-				<br/>
-				<div id="suggestions" style="margin-top:10px;width:100%;overflow:auto;"></div>					
+			<div id="step2" style="width: 100%;margin-top:30px;">
+				<h3 id="step2_label"><span id="loadingDiv" style="display:none;margin-left: 10px;"><img src="images/ui-anim_basic_16x16.gif"/></span></h3>				
+				<div id="suggestions" style="width:100%;overflow:auto;"></div>					
 			</div>
 			
-			<div id="step3" class="ui-widget" style="width: 100%;margin-top:45px;">				
-				<div id="selected" style="margin-top:10px;width:100%;overflow:auto;"/>
+			<div id="step3" style="width: 100%;margin-top:45px;">	
+				<h3 id="step3_label"></h3>
+				<div id="selected" style="margin-top:10px;width:100%;overflow:auto;"></div>
 			</div>
 			
-			<div class="ui-widget" style="width: 100%;margin-top:45px;">
-				4.
-				<button id="copy" class="button">Copy to clipboard</button>				
-				<button id="clear" class="button" style="display:none;">Clear</button>
+			<div style="width: 100%;margin-top:35px;margin-bottom:80px;">
+				<h3 id="step4_label">4.
+					<button id="copy" class="button">Copy to clipboard</button>				
+					<button id="clear" class="button" style="display:none;">Clear</button>
+				</h3>
 			</div>
 	</div>
 		

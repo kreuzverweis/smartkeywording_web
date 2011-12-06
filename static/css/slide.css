@@ -112,16 +112,14 @@
     z-index: 999;
 }
 #panel {
-    background: none repeat scroll 0 0 #F2F2F2;
-    color: black;
+    background: none repeat scroll 0 0 #F2F2F2;    
     height: 600px;
     overflow: hidden;
     position: relative;
     width: 100%;
     z-index: 3;
 }
-#panel .content {
-    font-size: 80%;
+#panel .content {    
     margin: 0 auto;
     padding-top: 15px;
     text-align: left;
@@ -130,8 +128,15 @@
 #panel .content .left {
     float: left;
     padding: 0 15px;
-    width: 400px;
+    width: 300px;
 }
+
+#panel .content .middle {
+    float: left;
+    padding: 0 15px;
+    width: 500px;
+}
+
 #panel .content form {
     margin: 0 0 10px;
 }
