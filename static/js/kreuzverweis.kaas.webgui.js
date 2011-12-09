@@ -6,11 +6,7 @@
 	var loggedIn = false;
 	var pause = false;
 	
-	jQuery.i18n.properties({
-		name:'messages', 
-		path:'js/', 
-		mode:'both'			
-	});
+	
 	
 	function login(token,secret,errorFunc,successFunc) {
 		// set cookies
@@ -219,26 +215,36 @@
 		}
 	}
 	
-	$(function() {			
-		$("#login_messages").empty().append(msg.member.welcome);
-		$("#login").attr('value',msg.button.login);
-		$("#member_login").empty().append(msg.member.login);
-		$("#member_userid").empty().append(msg.member.userid);
-		$("#member_pwd").empty().append(msg.member.pwd);
-		$("#member_recmethod").empty().append(msg.member.recmethod);
-		$("#member_recmethod1").prepend(msg.member.recmethod1);
-		$("#member_recmethod2").prepend(msg.member.recmethod2);
-		setRecMethod();			
-		$("#member_sign_up").empty().append(msg.member.sign_up);		$("#member_enter_your_email").empty().append(msg.member.enter_your_email);
-		$("#member_register").attr("value", msg.member.register);
-		$("#open").empty().append(msg.member.open);
-		$("#close").empty().append(msg.member.close);
-		
-		$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
-		$("#step2_label").prepend(msg.step2);
-		$("#step3_label").append(msg.step3);
-		$("#copy").empty().append(msg.copy);
-		$("#clear").empty().append(msg.clear);	
+	$(function() {	
+		jQuery.i18n.properties({
+				name:'messages', 
+				path:'js/', 
+				mode:'both',
+				encoding:'UTF-8',
+				callback: function() {
+					$("#login_messages").empty().append(msg.member.welcome);
+					$("#login").attr('value',msg.button.login);
+					$("#member_login").empty().append(msg.member.login);
+					$("#member_userid").empty().append(msg.member.userid);
+					$("#member_pwd").empty().append(msg.member.pwd);
+					$("#member_recmethod").empty().append(msg.member.recmethod);
+					$("#member_recmethod1").prepend(msg.member.recmethod1);
+					$("#member_recmethod2").prepend(msg.member.recmethod2);
+					$("#member_sign_up").empty().append(msg.member.sign_up);		$("#member_enter_your_email").empty().append(msg.member.enter_your_email);
+					$("#member_register").attr("value", msg.member.register);
+					$("#open").empty().append(msg.member.open);
+					$("#close").empty().append(msg.member.close);
+					
+					$("#step1_label").append(msg.step1+" (<span id='examples' class='clickable' title='Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ...'>"+msg.examples+"</span>):");
+					$("#step2_label").prepend(msg.step2);
+					$("#step3_label").append(msg.step3);
+					$("#copy").empty().append(msg.copy);
+					$("#clear").empty().append(msg.clear);	
+				}
+			});	
+	
+	
+		setRecMethod();					
 		
 		$('#loginform').submit(function() {
 		  return false;
