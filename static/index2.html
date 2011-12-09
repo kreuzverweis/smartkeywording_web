@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Kreuzverweis Keywording Demo</title>	
+	<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+	<script type="text/javascript">		
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-5276354-4']);
+		  _gaq.push(['_setDomainName', 'none']);
+		  _gaq.push(['_setAllowLinker', true]);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+	</script>		
+</head>
+<body style="padding-top: 100px;">
+
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;vertical-align:-4%;"></a>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <form action="" class="pull-right">
+            <input class="input-small" placeholder="Username" type="text">
+            <input class="input-small" placeholder="Password" type="password">
+            <button class="btn" type="submit">Sign in</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+          <h1>Keywording App<small> ... our interpretation of simplified keywording </small></h1>
+        </div>
+        
+        
+        <div class="row">
+        	<div class="span8">
+        		<h3 id="step1_label">1. Enter a Keyword</h3>
+        	</div>
+        </div>
+        <div class="row">
+          <div class="span8">          	
+            <input type="text" id="keyword" style="width:100%;" placeholder="1. Enter a keyword"/>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="span8">
+          <h3 id="step2_label">2. Choose from Our Suggestions<span id="loadingDiv" style="display:none;margin-left: 10px;"><img src="images/ui-anim_basic_16x16.gif"/></span></h3>							            
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">          	
+			<div id="suggestions" style="width:100%;overflow:auto;"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span4">
+			<h3 id="step3_label">3. Your Selection</h3>				
+          </div>
+          <div class="span12">          	
+			<div id="selected" style="width:100%;overflow:auto;"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span8">
+			<h3 id="step4_label">4. Take your Selection Away</h3>
+          </div>
+          <div class="span12">          	
+			<input type="submit" id="copy" class="btn success" value="Copy Selection to Clipboard"/>
+			<input type="submit" id="clear" class="btn danger" value="Clear Selection"/>
+          </div>
+        </div>
+
+        
+      </div> <!-- content -->
+
+      <footer>
+        <p>© by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;"></a> 2011</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>
+</html>
+  
+
+
