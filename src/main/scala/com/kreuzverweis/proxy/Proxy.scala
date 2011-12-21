@@ -30,15 +30,9 @@ object Proxy extends Plan {
 	def intent = {
 	  case req @ POST(Path("/credentials")) => {
 	    try {
-		    val Params(form) = req
-		    println("form: %s".format(form.toString))
-		    if (!form.isDefinedAt("email")) {
-		      BadRequest ~> ResponseString("No email specified.")
-		    } else {
-  		    h(credentials << Map("email" -> form("email").head)  >- { res =>
-  		      Ok
-  		    })
-	      }
+		    h(credentials << Map()  >- { res =>
+		      ResponseString(res)
+		    })
 	    } catch {
 	      case e => {
 	       InternalServerError ~> ResponseString(e.getMessage())
