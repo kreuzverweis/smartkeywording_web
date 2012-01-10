@@ -3,7 +3,6 @@ var selected = new Array();
 var complReqs = new Array();
 var propReqs = new Array();
 var pause = false;
-var acRunning = false;
 
 var dict = {};
 dict.rm_method1 = 'abstracts_dbp37i';
@@ -27,7 +26,7 @@ function handleAjaxError(jqXHR) {
 		case 500:
 			// internal server error
 			console.log("internal server error occurred");
-			var m = createMessage('info', txt.internalServerError.title, txt.internalServerError.content);
+			var m = createMessage('error', txt_internalServerError_title, txt_internalServerError_content);
 			$(m).appendTo($('#messages'));
 			break;
 		case 0:
@@ -87,6 +86,13 @@ function removeEmptyLines() {
 				}
 			}
 		});
+		if(removeLine) {
+			// last line was completely hidden
+			//console.log("removing line with hidden keywords: " + markedForRemoval);
+			for(i in markedForRemoval) {
+				$(markedForRemoval[i]).remove();
+			}
+		}
 	}
 }
 
@@ -155,7 +161,7 @@ function deSelect(ui) {
 	if($(ui).parent()[0] == $("#suggestions")[0]) {
 		suggestions.splice($.inArray($(ui).text(), suggestions), 1);
 		selected.push($(ui).text());
-		$(ui).clone().css("display", "none").appendTo($("#selected")).fadeIn(500);
+		$(ui).clone().css("display", "none").addClass('primary small').appendTo($("#selected")).fadeIn(500);
 		//$(ui).fadeOut(500, function() {
 			$(ui).css("visibility", "hidden");
 		//});
@@ -167,7 +173,7 @@ function deSelect(ui) {
 		});
 		getProposals();
 	} else {//if it has been autocompleted or entered manually
-		$(ui).css("visibility", "none");
+		$(ui).css("visibility", "none").addClass('primary small');
 		$('#empty-suggestion-text').hide();
 		$('#empty-selection-text').hide();
 		$("#selected").append($(ui));
@@ -181,7 +187,7 @@ function deSelect(ui) {
 }
 
 function createKeywordUIItem(label, score) {
-	var x = $('<span>').attr("class", "btn default");
+	var x = $('<span>').attr("class", "btn");
 	x.attr("score", score);
 	//x.css('display:inline');
 	x.text(label);
@@ -215,15 +221,18 @@ function sleep(milliseconds) {
 function clear() {
 	selected = [];
 	suggestions = [];
-	$("#suggestions > span").fadeOut(500, function() {
-		$(this).remove();
-	});
-	$("#selected > span").fadeOut(500, function() {
+	$("#suggestions > span").remove();
+
+	//$("#suggestions > span").fadeOut(500, function() {
+	//	$(this).remove();
+	//});
+	
+	$("#selected > span").fadeOut(200, function() {
 		$(this).remove();
 	});
 	$("#empty-suggestion-text").fadeIn();
 	$("#empty-selection-text").fadeIn();
-	$('#clear').toggle(200);
+	$('#clear').toggle(100);
 }
 
 function default_data() {
@@ -231,6 +240,16 @@ function default_data() {
 }
 
 $(function() {
+	$("#loadingDiv").show();
+	
+	autoLogin(function() {
+		handleAjaxError(this);
+	}, function() {
+		console.log('login succeeded');
+		$('#prefPanel').show();
+	});
+	
+	
 	jQuery.i18n.properties({
 		name : 'messages-2',
 		path : 'js/',
@@ -255,6 +274,8 @@ $(function() {
 		}
 	});
 
+	$("#loadingDiv").hide();
+
 	$("#input-suggestions-label").popover({
 		title : function() {
 			return txt_suggestions_help;
@@ -276,15 +297,8 @@ $(function() {
 		offset : 0,
 		trigger : 'hover'
 	});
-
+	
 	setRecMethod();
-
-	autoLogin(function() {
-		handleAjaxError(this);
-	}, function() {
-		console.log('login succeeded');
-		$('#prefPanel').show();
-	});
 
 	$('a[id*="rm_"]').click(function() {
 		console.log($(this));
@@ -357,6 +371,17 @@ $(function() {
 		clear();
 	});
 
+	$('#keyword').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+		// if ENTER is pressed
+		 if (code == 13) { 
+		 	var ui = createKeywordUIItem($(this).val(), 0.0);
+			deSelect(ui);
+			$(this).val("");
+		 }
+	});
+
+
 	$("#keyword").autocomplete({
 		source : function(request, response) {
 			$.ajax({
@@ -370,38 +395,36 @@ $(function() {
 				},
 				success : function(xmlResponse, jqxhr) {
 					if($('keyword', xmlResponse).length == 0) {
-						response([{
-							value : $('#keyword').attr('value')
-						}]);
+						console.log("no completion for "+$('#keyword').val());
+						response();
 					} else {
-						//TODO: workaround for autocomplete bug may be to check if keywords start with current input value
-						// and current completions to skip outdated response that come in late and
-						// have been requested before the latest request has been responded already
-						response($("keyword", xmlResponse).map(function() {
-							return {
-								value : $("label", this).text() + ($.trim($("synonyms", this).text()) || ""),
-								score : $("score", this).text()
-							};
-						}));
+						// current input
+						var input = $('#keyword').val().toLowerCase();
+						var inputLength = input.length;
+						var firstCompletion = $($("keyword > label",xmlResponse)[0]).text().toLowerCase();
+						
+						if ( firstCompletion.substr(0,inputLength) == input ) {
+							response($("keyword", xmlResponse).map(function() {
+								return {
+									value : $("label", this).text() + ($.trim($("synonyms", this).text()) || ""),
+									score : $("score", this).text()
+								};
+							}));
+						} else {
+							console.log("catched belated autocomplete response");
+						}
 					}
 
 				}
 			})
 		},
-		delay : 500,
+		delay : 200,
 		minLength : 3,
-		autoFocus : true,
-		select : function(event, dataItem) {
-			ui = createKeywordUIItem(dataItem.item.value, dataItem.item.score);
-			deSelect(ui);
-			$(this).val("");
-			return false;
-		},
-		open : function() {
+		autoFocus : true,		
+		open : function() {			
 			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
 		},
-		close : function() {
-			ac_open = false;
+		close : function() {			
 			$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
 		}
 	});

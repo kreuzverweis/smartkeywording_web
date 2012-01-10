@@ -16,22 +16,32 @@ function autoLogin(errorFunction,successFunction) {
 	// check for cookies
 	// if no cookies, request token/secret and set cookies
 	if(!$.cookie('token') || !$.cookie('secret')) {
-		//TODO: request token/secret from server
+		// request token/secret from server
 		$.ajax({
-			url : "hallo",
+			url : "/credentials",
+			type : "POST",
+			data: '',
 			dataType : "xml",
 			error : function(jqXHR, textStatus, errorThrown) {
 				errorFunction.call(jqXHR);
 			},
 			success : function(xmlResponse) {
-				var token;
-				var secret;
+				var token = $('token > id',xmlResponse).text();
+				var secret = $('token > secret',xmlResponse).text();
 				setCredentials(token, secret);
+				console.log('token is '+$.cookie('token')+' / secret is '+$.cookie('secret'));
+				// wait until cookie is set
+				// try a request and check if it works
+				//delayedExec("500",function() {	
+					//	if($.cookie('token') && $.cookie('secret')) {	
+							login(errorFunction, successFunction);
+						//}
+				//	},"loginQueue");				
 			}
 		});
-	}
-	// try a request and check if it works
-	login(errorFunction, successFunction);
+	} else {
+		login(errorFunction, successFunction);
+	}	
 }
 
 function setCredentials(token, secret) {
