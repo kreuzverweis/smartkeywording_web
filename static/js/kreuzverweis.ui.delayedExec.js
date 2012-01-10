@@ -6,30 +6,17 @@
 function delayedExec(delay,theFunc,theQueue) {
 	if (!window[theQueue]) {
 		window[theQueue] = new Array();
-	} 
-		
-	// abort existing timeouts	
-	//console.log('queue length is: '+window[theQueue].length);
-	/*
-	for (i in window[theQueue]) {
-		clearTimeout(window[theQueue][i]);
-		//console.log('aborted 1 call');
-	}
-	window[theQueue] = [];
-	*/
-	// queue function call
+	} 			
 	//console.log('queueing one call for '+theFunc);
 	var timer=setTimeout(function (){runIfLatest(theQueue,theFunc);},delay)
 	//console.log('timer is: '+timer);
-	window[theQueue].push(timer);
-	//queue.push(setTimeout(runIfLatest(theFunc),delay));
+	window[theQueue].push(timer);	
 }
 
 function runIfLatest(theQueue,theFunc) {
 	var timer = window[theQueue].shift();
 	// stop oldest one
-	if (window[theQueue].length == 0) {
-		//var timer = window[theQueue].shift();		
+	if (window[theQueue].length == 0) {				
 		//console.log('running function after delay, this is '+this);
 		theFunc.call();
 	} else {

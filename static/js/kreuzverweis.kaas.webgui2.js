@@ -96,65 +96,69 @@ function removeEmptyLines() {
 	}
 }
 
-function getProposals() {
-	if(selected.length > 0) {
-		$("#loadingDiv").show();
-		var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
-		$.ajax({
-			url : url,
-			data : {
-				limit : 20
-			},
-			success : function(xmlResponse) {
-				var newSuggestions = new Array();
-				$("keyword", xmlResponse).each(function() {
-					newSuggestions.push($("label", this).text());
-				});
-				// remove invalid ones
-				$("#suggestions > span").each(function() {
-					//console.log("checking " + $(this).text());
-					var index = $.inArray($(this).text(), newSuggestions)
-					//console.log("index is "+index);
-					if(index > -1) {
-						// remove it from newLabels and make it visible
-						$(this).css("visibility", "visible");
-						//console.log("suggested label already there: " + $(this).text());
-						newSuggestions.splice(index, 1);
-					} else {
-						// make it invisible
-						//console.log("hiding label that is no longer valid: " + $(this).text());
-						$(this).css("visibility", "hidden");
-						suggestions.splice($.inArray($(this).text(), suggestions), 1);
+function getProposals(delay) {		
+	if (!delay && delay!=0)
+		delay = 2500;
+	delayedExec(delay, function() {						
+		if(selected.length > 0) {
+			$("#loadingDiv").show();
+			var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
+			$.ajax({
+				url : url,
+				data : {
+					limit : 20
+				},
+				success : function(xmlResponse) {
+					var newSuggestions = new Array();
+					$("keyword", xmlResponse).each(function() {
+						newSuggestions.push($("label", this).text());
+					});
+					// remove invalid ones
+					$("#suggestions > span").each(function() {
+						//console.log("checking " + $(this).text());
+						var index = $.inArray($(this).text(), newSuggestions)
+						//console.log("index is "+index);
+						if(index > -1) {
+							// remove it from newLabels and make it visible
+							$(this).css("visibility", "visible");
+							//console.log("suggested label already there: " + $(this).text());
+							newSuggestions.splice(index, 1);
+						} else {
+							// make it invisible
+							//console.log("hiding label that is no longer valid: " + $(this).text());
+							$(this).css("visibility", "hidden");
+							suggestions.splice($.inArray($(this).text(), suggestions), 1);
+						}
+					});
+					// add new ones
+					if(newSuggestions.length == 0) {
+						console.log("no new suggestions to add");
 					}
-				});
-				// add new ones
-				if(newSuggestions.length == 0) {
-					console.log("no new suggestions to add");
+					for(l in newSuggestions) {
+						// check if label already in list
+						// if yes
+						//console.log("adding new suggestion "+newSuggestions[l]);
+						ui = createKeywordUIItem(newSuggestions[l]);
+						$(ui).appendTo($("#suggestions")).fadeIn(2000);
+						suggestions.push(newSuggestions[l]);
+					}
+					delayedExec(300, function() {removeEmptyLines();
+					}, 'qLineRemoval');
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					handleAjaxError(jqXHR);
+				},
+				complete : function() {
+					if(propReqs.length == 1) {
+						$("#loadingDiv").hide();
+					}
 				}
-				for(l in newSuggestions) {
-					// check if label already in list
-					// if yes
-					//console.log("adding new suggestion "+newSuggestions[l]);
-					ui = createKeywordUIItem(newSuggestions[l]);
-					$(ui).appendTo($("#suggestions")).fadeIn(2000);
-					suggestions.push(newSuggestions[l]);
-				}
-				delayedExec(300, function() {removeEmptyLines();
-				}, 'qLineRemoval');
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				handleAjaxError(jqXHR);
-			},
-			complete : function() {
-				if(propReqs.length == 1) {
-					$("#loadingDiv").hide();
-				}
-			}
-		});
-	} else {
-		console.log("not requesting proposals as no keyword is selected");
-		clear();
-	}
+			});
+		} else {
+			console.log("not requesting proposals as no keyword is selected");
+			clear();
+		}
+	}, 'qGetProposals');
 }
 
 function deSelect(ui) {
@@ -179,7 +183,7 @@ function deSelect(ui) {
 		$("#selected").append($(ui));
 		$(ui).fadeIn(500);
 		selected.push($(ui).text());
-		getProposals();
+		getProposals(0);
 		if($("#clear").css("display") == "none") {
 			$("#clear").toggle(500);
 		}
