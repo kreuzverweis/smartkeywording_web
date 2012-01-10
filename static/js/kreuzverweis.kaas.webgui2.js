@@ -375,6 +375,7 @@ $(function() {
 		var code = (e.keyCode ? e.keyCode : e.which);
 		// if ENTER is pressed
 		 if (code == 13) { 
+		 	$('#keyword').autocomplete("close");
 		 	var ui = createKeywordUIItem($(this).val(), 0.0);
 			deSelect(ui);
 			$(this).val("");
@@ -401,8 +402,7 @@ $(function() {
 						// current input
 						var input = $('#keyword').val().toLowerCase();
 						var inputLength = input.length;
-						var firstCompletion = $($("keyword > label",xmlResponse)[0]).text().toLowerCase();
-						
+						var firstCompletion = $($("keyword > label",xmlResponse)[0]).text().toLowerCase();						
 						if ( firstCompletion.substr(0,inputLength) == input ) {
 							response($("keyword", xmlResponse).map(function() {
 								return {
@@ -414,13 +414,12 @@ $(function() {
 							console.log("catched belated autocomplete response");
 						}
 					}
-
 				}
 			})
 		},
 		delay : 200,
 		minLength : 3,
-		autoFocus : true,		
+		autoFocus : false,		
 		open : function() {			
 			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
 		},
