@@ -104,9 +104,9 @@ function pulsateProposals() {
 		duration: 800,
 		queue: false,
 		complete: function() {
-			console.log('forth animation done');
+			//console.log('forth animation done');
 			$('#suggestionbox').animate({ backgroundColor: oriColor }, 800, function() {
-				console.log('back animation done');
+				//console.log('back animation done');
 				if (waitingForProposals) {
 					pulsateProposals();
 				}
@@ -121,7 +121,7 @@ function getProposals(delay) {
 	delayedExec(delay, function() {						
 		if(selected.length > 0) {
 			waitingForProposals = true;	
-			pulsateProposals();
+			//pulsateProposals();
 			$("#loadingDiv").show();
 			var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
 			$.ajax({
