@@ -2,7 +2,9 @@ var suggestions = new Array();
 var selected = new Array();
 var complReqs = new Array();
 var propReqs = new Array();
-var pause = false;
+var waitingForProposals = false;
+var oriColor;
+var $_GET = {};
 
 var dict = {};
 dict.rm_method1 = 'abstracts_dbp37i';
@@ -96,11 +98,30 @@ function removeEmptyLines() {
 	}
 }
 
+function pulsateProposals() {	
+	var otherColor = "#FFFFFF";				
+	$('#suggestionbox').animate({ backgroundColor: otherColor }, {
+		duration: 800,
+		queue: false,
+		complete: function() {
+			console.log('forth animation done');
+			$('#suggestionbox').animate({ backgroundColor: oriColor }, 800, function() {
+				console.log('back animation done');
+				if (waitingForProposals) {
+					pulsateProposals();
+				}
+			});
+		}
+	});				
+}
+
 function getProposals(delay) {		
 	if (!delay && delay!=0)
-		delay = 2500;
+		delay = 2500;	
 	delayedExec(delay, function() {						
 		if(selected.length > 0) {
+			waitingForProposals = true;	
+			pulsateProposals();
 			$("#loadingDiv").show();
 			var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
 			$.ajax({
@@ -151,7 +172,8 @@ function getProposals(delay) {
 				complete : function() {
 					if(propReqs.length == 1) {
 						$("#loadingDiv").hide();
-					}
+						waitingForProposals = false;
+					}					
 				}
 			});
 		} else {
@@ -198,21 +220,26 @@ function createKeywordUIItem(label, score) {
 	return x;
 }
 
-function setRecMethod(newMethodId) {
-	var method = dict[$.cookie("split")] || 'rm_random';
-	if(newMethodId) {
-		console.log('new rm method, setting it from ' + method + ' to ' + newMethodId);
-		method = newMethodId;
-		if(newMethodId == 'rm_random') {
-			$.cookie('split', null);
-		} else {
-			$.cookie("split", dict[method], {
-				expires : 365
-			});
+function setRecMethod(newMethodId) {	
+	if ($_GET["split"]) {
+		console.log('parameter split found, setting cookie to '+$_GET["split"]);
+		$.cookie("split", 	$_GET["split"]);
+	} else {
+		var method = dict[$.cookie("split")] || 'rm_random';
+		if(newMethodId) {
+			console.log('new rm method, setting it from ' + method + ' to ' + newMethodId);
+			method = newMethodId;
+			if(newMethodId == 'rm_random') {
+				$.cookie('split', null);
+			} else {
+				$.cookie("split", dict[method], {
+					expires : 365
+				});
+			}
 		}
+		$('a[id*="rm_"]').parent().attr('class', '');
+		$("#" + method).parent().attr('class', 'active');
 	}
-	$('a[id*="rm_"]').parent().attr('class', '');
-	$("#" + method).parent().attr('class', 'active');
 }
 
 function sleep(milliseconds) {
@@ -244,7 +271,17 @@ function default_data() {
 }
 
 $(function() {
-	$("#loadingDiv").show();
+	$("#loadingDiv").show();		
+
+	document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+	    function decode(s) {
+	        return decodeURIComponent(s.split("+").join(" "));
+	    }
+	
+	    $_GET[decode(arguments[1])] = decode(arguments[2]);
+	});		
+	
+	oriColor = $('#suggestionbox').css('backgroundColor')
 	
 	autoLogin(function() {
 		handleAjaxError(this);

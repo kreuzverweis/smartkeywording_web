@@ -24,8 +24,7 @@
 			_gaq.push(['_setAccount', 'UA-5276354-4']);
 			_gaq.push(['_setDomainName', 'none']);
 			_gaq.push(['_setAllowLinker', true]);
-			_gaq.push(['_trackPageview']);
-			(function() {
+			_gaq.push(['_trackPageview']); (function() {
 				var ga = document.createElement('script');
 				ga.type = 'text/javascript';
 				ga.async = true;
@@ -57,12 +56,11 @@
 			}
 			#selected > .btn {
 				margin: 2px;
-			}	
-			
+			}
 			.alert-message .hero-unit {
 				background: none repeat scroll 0 0 #EEEEEE;
 				border-radius: 3px 3px 3px 3px;
-			}		
+			}
 		</style>
 	</head>
 	<body style="padding-top: 100px;">
@@ -94,35 +92,43 @@
 				</div>
 			</div>
 		</div>
-		<div class="container">			
+		<div class="container">
 			<div class="alert-message" data-alert="alert" style="padding:0px;border-style: none;background-image:none;background-color:transparent;">
 				<a class="close" style="margin:5px;" href="#">Close</a>
 				<div class="hero-unit">
-				<h1>Welcome to Webtag<img style="margin: 0 0 0 -20px;padding: 0;vertical-align: super;
-    width: 60px;" src="images/beta.png"/></h1>
-				
-					
-				<p>Webtag demonstrates <em>easy-to-use</em> keywording for all kinds of media assets, based on 
-					our <a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" >keyword service</a>. 
-				Add it to your (favourite) software to profit from <em>personalized</em> keyword suggestions and full
-							<em>integration</em>.
-					<!--<a href="mailto:info@kreuzverweis.com">Feel free to contact us.</a></span>-->			
-				</p>
-				<br/>				
-				<p>
-					<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" class="btn primary large">Add it to your software »</a>
-				</p>
+					<h1>Welcome to Webtag<img style="margin: 0 0 0 -20px;padding: 0;vertical-align: super;
+					width: 60px;" src="images/beta.png"/></h1>
+					<p>
+						Webtag demonstrates <em>easy-to-use</em> keywording for all kinds of media assets, based on
+						our <a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" >keyword service</a>.
+						Add it to your (favourite) software to profit from <em>personalized</em> keyword suggestions and full <em>integration</em>. <!--<a href="mailto:info@kreuzverweis.com">Feel free to contact us.</a></span>-->
+					</p>
+					<br/>
+					<p>
+						<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" class="btn primary large">Add it to your software »</a>
+					</p>
 				</div>
-			</div>			
-			
+			</div>
 			<div class="content">
-			<!--
+				<!--
 				<div class="page-header">
-					<h1>Enjoy<small> the free demo below and <a href="mailto:info@kreuzverweis.com">send</a> us your ideas for improvements.</small></h1>
+				<h1>Enjoy<small> the free demo below and <a href="mailto:info@kreuzverweis.com">send</a> us your ideas for improvements.</small></h1>
 				</div>
-			-->
+				-->
 				<div id="messages"></div>
 				<div class="row">
+					<!--<div class="span16">
+						<div class="row">
+							<div class="span6 withBG c2">
+								<h3>Info</h3>
+								<p>
+									Webtag suggests relevant keywords based on general knwoledge sources.
+									For more <em>personalized</em> suggestions, the system gradually
+									learns and specific keywords from your branch or company can be added.
+								</p>
+							</div>
+						</div>
+					</div>-->
 					<div class="span10 c2">
 						<input type="text" id="keyword" class="span10" placeholder="Enter a Keyword, e.g. Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ..."/>
 					</div>
@@ -131,16 +137,16 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="span10 withBG c2">
+					<div id="suggestionbox" class="span10 withBG c2">
 						<div id="suggestions" style="width:100%;overflow:auto;">
-							<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small> <span style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));" id="input-suggestions-label" class="label notice">?</span></h5>
+							<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small><span style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));" id="input-suggestions-label" class="label notice">?</span></h5>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="span10 withBG c2">
 						<div id="selected" style="width:100%;overflow:auto;">
-							<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small> <span id="input-selected-label" class="label notice"  style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));">?</span></h5>
+							<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small><span id="input-selected-label" class="label notice"  style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));">?</span></h5>
 						</div>
 					</div>
 				</div>
@@ -150,7 +156,7 @@
 						<input type="submit" id="clear" style="display:none;" class="btn danger" value="Clear the selection and start over"/>
 					</div>
 				</div>
-			</div>			
+			</div>
 			<footer>
 				<p>
 					© by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;"></a> 2011
