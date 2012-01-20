@@ -141,8 +141,8 @@ function getProposals(delay) {
 	delayedExec(delay, function() {						
 		if(selected.length > 0) {
 			waitingForProposals = true;	
-			pulsateProposals();
-			//$("#loadingDiv").show();
+			//pulsateProposals();
+			$("#loadingDiv").show();
 			var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
 			$.ajax({
 				url : url,
@@ -191,7 +191,7 @@ function getProposals(delay) {
 				},
 				complete : function() {
 					if(propReqs.length == 1) {
-						//$("#loadingDiv").hide();
+						$("#loadingDiv").hide();
 						waitingForProposals = false;
 					}					
 				}
