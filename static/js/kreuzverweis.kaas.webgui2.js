@@ -100,7 +100,7 @@ function removeEmptyLines() {
 }
 
 function pulsateProposals() {	
-	var otherColor = "#FFFFFF";		
+	var otherColor = "rgb(0, 100, 205)"; //"#FFFFFF";		
 	if (waitingForProposals) {		
 		//$('#suggestionbox').effect('pulsate', 2000, pulsateProposals);		
 		$('#suggestionbox').animate({ backgroundColor: otherColor },800,
@@ -119,16 +119,16 @@ function adText() {
 	var turn = 1;
 	intervalID = setInterval(function(){	
 		turn = turn + 1;
-		if (jQuery.i18n.prop('txt_ad'+turn+'_title') == '[txt_ad'+turn+'_title]')
+		if (jQuery.i18n.prop('txt_infobox_title'+turn) == '[txt_infobox_title'+turn+']')
 			turn = 1;
-		$('#ad_text').fadeOut(4000);	
-		$('#ad_title').fadeOut(4000,function() {
-			$('#ad_title').empty();
-			$('#ad_text').empty();
-			$('#ad_title').append(jQuery.i18n.prop('txt_ad'+turn+'_title'));
-			$('#ad_text').append(jQuery.i18n.prop('txt_ad'+turn+'_text'));
-			$('#ad_title').fadeIn(4000);
-			$('#ad_text').fadeIn(4000);
+		$('#infobox_text').fadeOut(4000);	
+		$('#infobox_title').fadeOut(4000,function() {
+			$('#infobox_title').empty();
+			$('#infobox_text').empty();
+			$('#infobox_title').append(jQuery.i18n.prop('txt_infobox_title'+turn));
+			$('#infobox_text').append(jQuery.i18n.prop('txt_infobox_text'+turn));
+			$('#infobox_title').fadeIn(4000);
+			$('#infobox_text').fadeIn(4000);
 		});
 	}, 20000);
 	
@@ -225,6 +225,8 @@ function deSelect(ui) {
 		$("#selected").append($(ui));
 		$(ui).fadeIn(500);
 		selected.push($(ui).text());
+		$('#suggestions').empty();
+		suggestions = [];
 		getProposals(0);
 		if($("#clear").css("display") == "none") {
 			$("#clear").toggle(500);
@@ -332,12 +334,12 @@ $(function() {
 			$("#copy").attr('value', txt_btn_copy);
 			$("#clear").attr('value', txt_btn_clear);
 			
-			$('#ad_title').empty().append(txt_ad1_title);
-			$('#ad_text').empty().append(txt_ad1_text);
+			$('#infobox_title').empty().append(txt_infobox_title1);
+			$('#infobox_text').empty().append(txt_infobox_text1);
 		}
 	});
 
-	adText();
+	//adText();
 	
 	//$("#loadingDiv").hide();
 
@@ -427,6 +429,22 @@ $(function() {
 			deSelect(ui.selected);
 		}
 	});
+	
+	$("#selectionbox").mouseenter(function(){
+		$("#sel_help").show();
+	});
+	
+	$("#selectionbox").mouseleave(function(){
+		$("#sel_help").hide();
+	});	
+	
+	$("#suggestionbox").mouseenter(function(){
+		$("#sugg_help").show();
+	});
+	
+	$("#suggestionbox").mouseleave(function(){
+		$("#sugg_help").hide();
+	});	
 
 	$("#copy").click(function() {
 		window.prompt("Press Ctrl+C (CMD+C on Mac) to copy the keywords to your clipboard.", getKeywordCSV());

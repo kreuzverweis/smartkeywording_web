@@ -37,6 +37,7 @@
 		<style>
 			.c2 {
 				margin-top: 5px;
+				position: relative;
 			}
 			.infolabel {
 				margin-left: 1px;
@@ -67,7 +68,7 @@
 		<div class="topbar">
 			<div class="fill">
 				<div class="container">
-					<a class="brand" href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;vertical-align:-4%;"></a>
+					<a class="brand" href="/">Webtag</a>
 					<ul id="prefPanel" class="nav secondary-nav" data-dropdown="dropdown" style="display:none;">
 						<li class="dropdown">
 							<a id="dropdown-method-title" class="dropdown-toggle" href="#">Suggestion Method</a>
@@ -105,7 +106,7 @@
 					</p>
 					<br/>
 					<p>
-						<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" class="btn primary large">Add it to your software »</a>
+						<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" class="btn primary large">Learn more »</a>
 					</p>
 				</div>
 			</div>
@@ -128,30 +129,34 @@
 						</div>
 						<div class="row">
 							<div id="suggestionbox" class="span12 withBG c2">
-								<div id="suggestions" style="width:100%;overflow:auto;">
-									<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small>
-										<span style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));" id="input-suggestions-label" class="label notice">?</span></h5>
+								<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small></h5>
+								<div id="suggestions" style="width:97%;overflow:auto;">									
+								</div>
+								<div id="sugg_help" style="position:absolute;padding:0px;margin:5px;line-height:10px;top:0px;right:0px;display:none;">
+									<span style="vertical-align: middle;" id="input-suggestions-label" class="label">?</span>
 								</div>
 							</div>
 						</div>
 						<div class="row">
-							<div class="span12 withBG c2">
-								<div id="selected" style="width:100%;overflow:auto;">
-									<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small>
-										<span id="input-selected-label" class="label notice"  style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));">?</span></h5>
+							<div id="selectionbox" class="span12 withBG c2">
+								<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small></h5>
+								<div id="selected" style="width:97%;overflow:auto;">									
+								</div>
+								<div id="sel_help" style="position:absolute;padding:0px;margin:5px;line-height:10px;top:0px;right:0px;display:none;">
+									<span id="input-selected-label" class="label"  style="vertical-align: middle;">?</span>
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="span8 c2">
 								<input type="submit" id="copy" class="btn default" value="Copy your selection to the clipboard"/>
-								<input type="submit" id="clear" style="display:none;" class="btn danger" value="Clear the selection and start over"/>
+								<input type="submit" id="clear" style="display:none;" class="btn default" value="Clear the selection and start over"/>
 							</div>
 						</div>
 					</div>
 					<div class="span4 withBG c2">
-						<h3 id="ad_title" style="padding-left:5px;padding-right:5px;">Info</h3>
-						<p id="ad_text" style="padding-left:5px;padding-right:5px;">
+						<h3 id="infobox_title" style="padding-left:5px;padding-right:5px;">Info</h3>
+						<p id="infobox_text" style="padding-left:5px;padding-right:5px;text-align:justify;">
 							Webtag suggests relevant keywords based on general knwoledge sources.
 							For more <em>personalized</em> suggestions, the system can
 							learn specific keywords from your branch or company.
