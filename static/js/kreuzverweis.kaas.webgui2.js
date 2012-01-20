@@ -22,7 +22,8 @@ function handleAjaxError(jqXHR) {
 			// if cookies are there but have wrong data
 			if($.cookie('token') && $.cookie('secret')) {
 				// display authentication failure message
-
+				var m = createMessage('error', 'Webtag could not authenticate you', 'Please try to delete the cookies "token" and "secret" in your browser and try again. If this does not help, feel free to send us an email.');
+				$(m).appendTo($('#messages'));
 			}
 			break;
 		case 500:
@@ -99,20 +100,39 @@ function removeEmptyLines() {
 }
 
 function pulsateProposals() {	
-	var otherColor = "#FFFFFF";				
-	$('#suggestionbox').animate({ backgroundColor: otherColor }, {
-		duration: 800,
-		queue: false,
-		complete: function() {
-			//console.log('forth animation done');
-			$('#suggestionbox').animate({ backgroundColor: oriColor }, 800, function() {
-				//console.log('back animation done');
-				if (waitingForProposals) {
-					pulsateProposals();
-				}
-			});
-		}
-	});				
+	var otherColor = "#FFFFFF";		
+	if (waitingForProposals) {		
+		//$('#suggestionbox').effect('pulsate', 2000, pulsateProposals);		
+		$('#suggestionbox').animate({ backgroundColor: otherColor },800,
+			function() {
+				//console.log('forth animation done');
+				$('#suggestionbox').animate({ backgroundColor: oriColor }, 800, function() {
+					//console.log('back animation done');	
+					pulsateProposals();				
+				});
+			}
+		);				
+	}
+}
+
+function adText() {
+	var turn = 1;
+	intervalID = setInterval(function(){	
+		turn = turn + 1;
+		if (jQuery.i18n.prop('txt_ad'+turn+'_title') == '[txt_ad'+turn+'_title]')
+			turn = 1;
+		$('#ad_text').fadeOut(4000);	
+		$('#ad_title').fadeOut(4000,function() {
+			$('#ad_title').empty();
+			$('#ad_text').empty();
+			$('#ad_title').append(jQuery.i18n.prop('txt_ad'+turn+'_title'));
+			$('#ad_text').append(jQuery.i18n.prop('txt_ad'+turn+'_text'));
+			$('#ad_title').fadeIn(4000);
+			$('#ad_text').fadeIn(4000);
+		});
+	}, 20000);
+	
+	//$('#ad_text')
 }
 
 function getProposals(delay) {		
@@ -121,8 +141,8 @@ function getProposals(delay) {
 	delayedExec(delay, function() {						
 		if(selected.length > 0) {
 			waitingForProposals = true;	
-			//pulsateProposals();
-			$("#loadingDiv").show();
+			pulsateProposals();
+			//$("#loadingDiv").show();
 			var url = "/proposals/" + encodeURIComponent(getKeywordCSV());
 			$.ajax({
 				url : url,
@@ -171,7 +191,7 @@ function getProposals(delay) {
 				},
 				complete : function() {
 					if(propReqs.length == 1) {
-						$("#loadingDiv").hide();
+						//$("#loadingDiv").hide();
 						waitingForProposals = false;
 					}					
 				}
@@ -271,7 +291,7 @@ function default_data() {
 }
 
 $(function() {
-	$("#loadingDiv").show();		
+	//$("#loadingDiv").show();		
 
 	document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 	    function decode(s) {
@@ -288,8 +308,7 @@ $(function() {
 	}, function() {
 		console.log('login succeeded');
 		$('#prefPanel').show();
-	});
-	
+	});	
 	
 	jQuery.i18n.properties({
 		name : 'messages-2',
@@ -312,10 +331,15 @@ $(function() {
 
 			$("#copy").attr('value', txt_btn_copy);
 			$("#clear").attr('value', txt_btn_clear);
+			
+			$('#ad_title').empty().append(txt_ad1_title);
+			$('#ad_text').empty().append(txt_ad1_text);
 		}
 	});
 
-	$("#loadingDiv").hide();
+	adText();
+	
+	//$("#loadingDiv").hide();
 
 	$("#input-suggestions-label").popover({
 		title : function() {

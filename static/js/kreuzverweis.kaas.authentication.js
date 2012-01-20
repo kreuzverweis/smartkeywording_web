@@ -32,11 +32,7 @@ function autoLogin(errorFunction,successFunction) {
 				console.log('token is '+$.cookie('token')+' / secret is '+$.cookie('secret'));
 				// wait until cookie is set
 				// try a request and check if it works
-				//delayedExec("500",function() {	
-					//	if($.cookie('token') && $.cookie('secret')) {	
-							login(errorFunction, successFunction);
-						//}
-				//	},"loginQueue");				
+				login(errorFunction, successFunction);
 			}
 		});
 	} else {

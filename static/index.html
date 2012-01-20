@@ -116,49 +116,48 @@
 				</div>
 				-->
 				<div id="messages"></div>
-				<div class="row">
-					<!--<div class="span16">
+				<div class="row">					
+					<div class="span12">
 						<div class="row">
-							<div class="span6 withBG c2">
-								<h3>Info</h3>
-								<p>
-									Webtag suggests relevant keywords based on general knwoledge sources.
-									For more <em>personalized</em> suggestions, the system gradually
-									learns and specific keywords from your branch or company can be added.
-								</p>
+							<div class="span12 c2">
+								<input type="text" id="keyword" class="span12" placeholder="Enter a Keyword, e.g. Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ..."/>																	
+							</div>					
+							<!--<div class="span1 c2 withBG">		
+								<span id="loadingDiv" style="display:none;line-height: 30px;"><img src="images/ui-anim_basic_16x16.gif"/></span>
+							</div>-->
+						</div>
+						<div class="row">
+							<div id="suggestionbox" class="span12 withBG c2">
+								<div id="suggestions" style="width:100%;overflow:auto;">
+									<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small>
+										<span style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));" id="input-suggestions-label" class="label notice">?</span></h5>
+								</div>
 							</div>
 						</div>
-					</div>-->
-					<div class="span10 c2">
-						<input type="text" id="keyword" class="span10" placeholder="Enter a Keyword, e.g. Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ..."/>
-					</div>
-					<div class="span2 c2">
-						<span id="loadingDiv" style="display:none;line-height: 30px;"><img src="images/ui-anim_basic_16x16.gif"/></span>
-					</div>
-				</div>
-				<div class="row">
-					<div id="suggestionbox" class="span10 withBG c2">
-						<div id="suggestions" style="width:100%;overflow:auto;">
-							<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small>
-								<span style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));" id="input-suggestions-label" class="label notice">?</span></h5>
+						<div class="row">
+							<div class="span12 withBG c2">
+								<div id="selected" style="width:100%;overflow:auto;">
+									<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small>
+										<span id="input-selected-label" class="label notice"  style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));">?</span></h5>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="span8 c2">
+								<input type="submit" id="copy" class="btn default" value="Copy your selection to the clipboard"/>
+								<input type="submit" id="clear" style="display:none;" class="btn danger" value="Clear the selection and start over"/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="span10 withBG c2">
-						<div id="selected" style="width:100%;overflow:auto;">
-							<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small>
-								<span id="input-selected-label" class="label notice"  style="vertical-align: middle;background-image:-moz-linear-gradient(center top , rgb(4, 156, 219), rgb(0, 100, 205));">?</span></h5>
-						</div>
+					<div class="span4 withBG c2">
+						<h3 id="ad_title" style="padding-left:5px;padding-right:5px;">Info</h3>
+						<p id="ad_text" style="padding-left:5px;padding-right:5px;">
+							Webtag suggests relevant keywords based on general knwoledge sources.
+							For more <em>personalized</em> suggestions, the system can
+							learn specific keywords from your branch or company.
+						</p>
 					</div>
-				</div>
-				<div class="row">
-					<div class="span8 c2">
-						<input type="submit" id="copy" class="btn default" value="Copy your selection to the clipboard"/>
-						<input type="submit" id="clear" style="display:none;" class="btn danger" value="Clear the selection and start over"/>
-					</div>
-				</div>
-			</div>
+				</div>					
 			<footer>
 				<p>
 					© by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;"></a> 2012
