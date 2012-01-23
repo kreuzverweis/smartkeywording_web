@@ -22,7 +22,7 @@ function handleAjaxError(jqXHR) {
 			// if cookies are there but have wrong data
 			if($.cookie('token') && $.cookie('secret')) {
 				// display authentication failure message
-				var m = createMessage('error', 'Webtag could not authenticate you', 'Please try to delete the cookies "token" and "secret" in your browser and try again. If this does not help, feel free to send us an email.');
+				var m = createMessage('error', txt_authenticationFailed_title, txt_authenticationFailed_content);
 				$(m).appendTo($('#messages'));
 			}
 			break;
@@ -318,6 +318,11 @@ $(function() {
 		mode : 'both',
 		encoding : 'UTF-8',
 		callback : function() {
+			$('#webtag_title').empty().append(webtag_title);
+			$('#webtag_title_content').empty().append(webtag_title_content);
+			$('#webtag_title_read_more').empty().append(webtag_title_read_more);
+			
+			
 			$('#dropdown-method-title').empty().append(txt_dropdown_method_title);
 			$('#rm_random').empty().append(txt_dropdown_method_random);
 			$('#rm_method1').empty().append(txt_dropdown_method_method1);
