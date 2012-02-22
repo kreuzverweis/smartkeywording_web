@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Kreuzverweis Smart Keywording for the Web</title>
+		<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+		<link type="text/css" href="css/bootstrap-1.4.0.min.css" rel="stylesheet"/>
+		<script src="js/jquery-1.7.min.js" type="text/javascript"></script>
+		<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="js/jquery.i18n.properties-min-1.0.9.js" type="text/javascript"></script>
+		<script src="js/jquery.cookie.js" type="text/javascript"></script>
+		<script src="js/jquery.tools.min.js" type="text/javascript"></script>
+		<script src="js/bootstrap-dropdown.js" type="text/javascript"></script>
+		<script src="js/bootstrap-alerts.js" type="text/javascript"></script>
+		<script src="js/bootstrap-buttons.js" type="text/javascript"></script>
+		<script src="js/bootstrap-twipsy.js" type="text/javascript"></script>
+		<script src="js/bootstrap-popover.js" type="text/javascript"></script>
+		<script src="js/kreuzverweis.ui.delayedExec.js" type="text/javascript"></script>		
+		<script src="js/kreuzverweis.kaas.authentication.js" type="text/javascript"></script>
+		<script src="js/kreuzverweis.ui.messages.js" type="text/javascript"></script>
+		<script src="js/kreuzverweis.kaas.webtag.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-5276354-4']);
+			_gaq.push(['_setDomainName', 'none']);
+			_gaq.push(['_setAllowLinker', true]);
+			_gaq.push(['_trackPageview']); (function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+		<style>
+			.c2 {
+				margin-top: 5px;
+				position: relative;
+			}
+			.infolabel {
+				margin-left: 1px;
+				margin-top: 2px;
+			}
+			.withBG {
+				background: none repeat scroll 0 0 #EEEEEE;
+				border-radius: 3px 3px 3px 3px;
+				line-height: 30px;
+				min-height: 30px;
+				text-align: left;
+				/* padding-left: 5px; */
+			}
+			#suggestions > .btn {
+				float: left;
+				margin: 2px;
+			}
+			#selected > .btn {
+				margin: 2px;
+			}
+			.alert-message .hero-unit {
+				background: none repeat scroll 0 0 #EEEEEE;
+				border-radius: 3px 3px 3px 3px;
+			}
+		</style>
+	</head>
+	<body style="padding-top: 100px;">
+		<div class="topbar">
+			<div class="fill">
+				<div class="container">
+					<a class="brand" href="/">Smart Keywording for the Web</a>
+					<ul id="prefPanel" class="nav secondary-nav" data-dropdown="dropdown" style="display:none;">
+						<li class="dropdown">
+							<a id="dropdown-language-title" class="dropdown-toggle" href="#">Language</a>
+							<ul class="dropdown-menu">
+								<li >
+									<a id="lang_de" value="de" href="#">German</a>
+								</li>								
+								<li >
+									<a id="lang_en" value="en" href="#">English</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="alert-message" data-alert="alert" style="padding:0px;border-style: none;background-image:none;background-color:transparent;">
+				<a class="close" style="margin:5px;" href="#">Close</a>
+				<div class="hero-unit">
+					<h1 id="webtag_title">Welcome to Smart Keywording for the Web<img style="margin: 0 0 0 -20px;padding: 0;vertical-align: super;
+					width: 60px;" src="images/beta.png"/></h1>
+					<p id="webtag_title_content">
+						This webapp demonstrates <em>easy-to-use</em> keywording for all kinds of media assets, based on
+						<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" >Smart Keywording</a>.
+						Add it to your (favourite) software to profit from <em>personalized</em> keyword suggestions and full <em>integration</em>. <!--<a href="mailto:info@kreuzverweis.com">Feel free to contact us.</a></span>-->
+					</p>
+					<br/>
+					<p id="webtag_title_read_more">
+						<a href="http://kreuzverweis.com/keyword-service" onclick="_gaq.push(['_link', 'http://kreuzverweis.com/keyword-service']); return false;" class="btn primary large">Learn more »</a>
+					</p>
+				</div>
+			</div>
+			<div class="content">
+				<!--
+				<div class="page-header">
+				<h1>Enjoy<small> the free demo below and <a href="mailto:info@kreuzverweis.com">send</a> us your ideas for improvements.</small></h1>
+				</div>
+				-->
+				<div id="messages"></div>
+				<div class="row">					
+					<div class="span12">
+						<div class="row">
+							<div class="span12 c2">
+								<input type="text" id="keyword" class="span12" placeholder="Enter a Keyword, e.g. Simone Laudehr, Airbus A380, Kölner Dom, Baum, Brooklyn Bridge ..."/>																	
+							</div>					
+							<!--<div class="span1 c2 withBG">		
+								<span id="loadingDiv" style="display:none;line-height: 30px;"><img src="images/ui-anim_basic_16x16.gif"/></span>
+							</div>-->
+						</div>
+						<div class="row">
+							<div id="suggestionbox" class="span12 withBG c2">
+								<h5 id="empty-suggestion-text" style="padding-left:5px;"><small>Add from the suggestions that appear here.</small></h5>
+								<div id="suggestions" style="width:97%;overflow:auto;">									
+								</div>
+								<div id="sugg_help" style="position:absolute;padding:0px;margin:5px;line-height:10px;top:0px;right:0px;display:none;">
+									<span style="vertical-align: middle;" id="input-suggestions-label" class="label">?</span>
+								</div>
+								
+									<img id="loadingDiv" style="position:absolute;padding:0px;margin:5px;line-height:10px;top:0px;right:0px;display:none;" src="images/ui-anim_basic_16x16.gif"/>
+								
+							</div>
+						</div>
+						<div class="row">
+							<div id="selectionbox" class="span12 withBG c2">
+								<h5 id="empty-selection-text" style="padding-left:5px;"><small>Your selection appears here.</small></h5>
+								<div id="selected" style="width:97%;overflow:auto;">									
+								</div>
+								<div id="sel_help" style="position:absolute;padding:0px;margin:5px;line-height:10px;top:0px;right:0px;display:none;">
+									<span id="input-selected-label" class="label"  style="vertical-align: middle;">?</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="span8 c2">
+								<input type="submit" id="copy" class="btn default" value="Copy your selection to the clipboard"/>
+								<input type="submit" id="clear" style="display:none;" class="btn default" value="Clear the selection and start over"/>
+							</div>
+						</div>
+					</div>
+					<div class="span4 withBG c2">
+						<h3 id="infobox_title" style="padding-left:5px;padding-right:5px;">Info</h3>
+						<p id="infobox_text" style="padding-left:5px;padding-right:5px;text-align:justify;">
+							Smart Keywording suggests relevant keywords based on general knwoledge sources.
+							For more <em>personalized</em> suggestions, the system can
+							learn specific keywords from your branch or company.
+						</p>
+					</div>
+				</div>					
+			<footer>
+				<p>
+					© by <a href="http://kreuzverweis.com" onclick="_gaq.push(['_link', 'http://kreuzverweis.com']); return false;"><img src="images/kreuzverweis_logo.png" style="height:20px;"></a> 2012
+				</p>
+			</footer>
+		</div>
+		<!-- /container -->
+	</body>
+</html>
