@@ -475,7 +475,7 @@ $(function() {
 		source : function(request, response) {
 			$.ajax({
 				headers: { 
-        			Accept : "Accept-Language: "+$.cookie("lang")
+					"Accept-Language": $.cookie("lang")        			
     			},
 				url : "/completions/" + encodeURIComponent(request.term) + "?limit=10",
 				dataType : "xml",
