@@ -242,7 +242,11 @@ function setRecMethod(newMethodId) {
 	if ($_GET["split"]) {
 		console.log('parameter split found, setting cookie to '+$_GET["split"]);
 		$.cookie("split", 	$_GET["split"]);
-	} 
+	} else {
+		//remove split cookie that may be left from prior webtag version to be downward compatible
+	 	$.cookie("split",null);
+	 	console.debug("removed potentially existing split cookie");
+	}
 }
 
 /**
@@ -324,7 +328,6 @@ function default_data() {
 
 
 $(function() {
-	//$("#loadingDiv").show();		
 
 	document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 	    function decode(s) {
