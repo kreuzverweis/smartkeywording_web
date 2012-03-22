@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
 )
 
 resolvers ++= Seq(
-  "jboss repo" at "http://repository.jboss.org/nexus/content/groups/public-jboss/"
+  "jboss repo" at "http://repository.jboss.org/nexus/content/groups/public-jboss/",
+  "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 )
 
 seq(StartScriptPlugin.startScriptForClassesSettings: _*)
