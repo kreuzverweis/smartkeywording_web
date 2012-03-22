@@ -1,1 +1,1 @@
-web: target/start $PORT
+web: target/start $PORT custom.conf

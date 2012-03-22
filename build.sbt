@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
    "net.databinder" %% "unfiltered-jetty" % "0.5.1",
    "net.databinder" %% "dispatch-nio" % "0.8.5",
    "net.databinder" %% "dispatch-oauth" % "0.8.5",
-   "org.clapper" %% "avsl" % "0.3.6"
+   "org.clapper" %% "avsl" % "0.3.6",
+   "com.typesafe.config" % "config" % "0.3.0"
 )
 
 resolvers ++= Seq(
