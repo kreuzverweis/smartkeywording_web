@@ -35,12 +35,13 @@ import unfiltered.request._
  */
 object Proxy extends Plan {
   val h = new Http with thread.Safety
-  var server = url("https://services.kreuzverweis.com/")
+  var keywording: Request = null
+  var backoffice: Request = null
   var client = ("", "")
-  lazy val completions = server / "keywords/completions"
-  lazy val proposal = server / "keywords/proposals"
-  lazy val users = server / "api" / "users"
-  def tokens(id: String) = server / "api/users" / id / "tokens" 
+  lazy val completions = keywording / "completions"
+  lazy val proposal = keywording / "proposals"
+  lazy val users = backoffice / "users"
+  def tokens(id: String) = backoffice / "users" / id / "tokens" 
 
   def intent = {
     case req @ POST(Path("/users")) => {
