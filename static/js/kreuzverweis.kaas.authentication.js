@@ -17,7 +17,7 @@
  **/
 
 function autoLogin(errorFunction, successFunction) {
-	var userid;
+	
 	// if no token is available
 	if(!$.cookie('token')) {
 		// if no userid is available
@@ -32,7 +32,7 @@ function autoLogin(errorFunction, successFunction) {
 					errorFunction.call(jqXHR);
 				},
 				success : function(xmlResponse) {
-					userid = $('user > id', xmlResponse).text();
+					var userid = $('user > id', xmlResponse).text();
 					$.cookie('userid', userid, {
 						expires : 365
 					});
@@ -41,6 +41,7 @@ function autoLogin(errorFunction, successFunction) {
 				}
 			});
 		}
+		var userid = $.cookie('userid');
 		$.ajax({
 			url : "/users/" + userid + "/tokens",
 			type : "POST",
