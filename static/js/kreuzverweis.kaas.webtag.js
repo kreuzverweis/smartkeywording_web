@@ -405,27 +405,6 @@ $(function() {
 		}
 	});
 
-	$("#member_register").click(function() {
-		$.ajax({
-			type : "POST",
-			url : "/credentials",
-			data : {
-				email : $("#email").val()
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				$("#login_messages").empty().append(msg.member.sign_up.error);
-				$("#login_messages").effect("highlight", {
-					color : "#505050"
-				}, 500);
-				console.log("register error text status: " + textStatus);
-				console.log("register error thrown: " + errorThrown);
-			},
-			success : function(response) {
-				alert(msg.member.signIn);
-			}
-		});
-	});
-
 	$("#suggestions").selectable({
 		selected : function(event, ui) {
 			deSelect(ui.selected);
