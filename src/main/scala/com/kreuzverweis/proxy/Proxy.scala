@@ -39,7 +39,7 @@ object Proxy extends Plan {
   var backoffice: Request = null
   var client = ("", "")
   lazy val completions = keywording / "completions"
-  lazy val proposal = keywording / "keywords/proposals"
+  lazy val proposal = keywording / "proposals"
   lazy val users = backoffice / "users"
   def tokens(id: String) = backoffice / "users" / id / "tokens" 
 
