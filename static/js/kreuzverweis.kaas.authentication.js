@@ -17,7 +17,6 @@
  **/
 
 function autoLogin(errorFunction, successFunction) {
-	
 	// if no token is available
 	if(!$.cookie('token')) {
 		// if no userid is available
@@ -27,6 +26,7 @@ function autoLogin(errorFunction, successFunction) {
 				url : "/users",
 				type : "POST",
 				data : '',
+				async: false,
 				dataType : "xml",
 				error : function(jqXHR, textStatus, errorThrown) {
 					errorFunction.call(jqXHR);
@@ -46,6 +46,7 @@ function autoLogin(errorFunction, successFunction) {
 			url : "/users/" + userid + "/tokens",
 			type : "POST",
 			data : '',
+			async: false,
 			dataType : "xml",
 			error : function(jqXHR, textStatus, errorThrown) {
 				errorFunction.call(jqXHR);
@@ -54,7 +55,7 @@ function autoLogin(errorFunction, successFunction) {
 				var token = $('token > value', xmlResponse).text();
 				//var expires = $('token > expires', xmlResponse).text();
 				$.cookie('token', token);
-				console.log('token is ' + token);
+				console.log('token is ' + $.cookie('token'));
 			}
 		});
 	}
@@ -67,6 +68,7 @@ function login(errorFunc, successFunc) {
 	$.ajax({
 		url : "/completions/" + encodeURIComponent("Köln") + "?limit=1",
 		dataType : "xml",
+		async: false,
 		error : function(jqXHR, textStatus, errorThrown) {
 			errorFunc.call(jqXHR);
 		},
