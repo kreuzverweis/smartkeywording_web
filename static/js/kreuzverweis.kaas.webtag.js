@@ -23,6 +23,7 @@ var propReqs = new Array();
 var waitingForProposals = false;
 var oriColor;
 var $_GET = {};
+var lang = 'en';
 
 function handleAjaxError(jqXHR) {
 	switch (jqXHR.status) {
@@ -252,8 +253,7 @@ function setRecMethod(newMethodId) {
 /**
  * Stores and updates language setting in cookie and UI
  */
-function setLanguage(newLanguage) {		
-	var lang = 'en';
+function setLanguage(newLanguage) {			
 	// try to read previously chosen language from cookie if no newLanguage parameter is given, 
 	// e.g. at startup of the app
 	if (!newLanguage) {
@@ -335,7 +335,9 @@ $(function() {
 	    }
 	
 	    $_GET[decode(arguments[1])] = decode(arguments[2]);
-	});				
+	});		
+	
+	setLanguage();		
 	
 	autoLogin(function() {
 		handleAjaxError(this);
@@ -344,12 +346,7 @@ $(function() {
 		$('#prefPanel').show();
 	});	
 	
-	setLanguage();
-	
-	
-
-	//adText();
-	
+	//adText();	
 
 	$("#input-suggestions-label").popover({
 		title : function() {
