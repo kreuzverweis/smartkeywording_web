@@ -1,7 +1,11 @@
 About
 =====
 
-This is Kreuzverweis Smart Keywording for the web(browser). This is mainly meant as a demo how to access the Kreuzverweis Smart Keywording Service from a webapp. The demo consists of two parts, a backend proxy talking to the Smart Keywording Webservice, and a JavaScript client for the GUI.
+This is [Kreuzverweis](http://kreuzverweis.com) [Smart
+Keywording](http://kreuzverweis.com/smart-keywording/) for the web(browser).
+This is mainly meant as a demo how to access the Kreuzverweis Smart Keywording
+Service from a webapp. The demo consists of two parts, a backend proxy talking
+to the Smart Keywording Webservice, and a JavaScript client for the GUI.
 
 Running the Demo
 ================
