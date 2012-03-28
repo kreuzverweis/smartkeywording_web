@@ -9,11 +9,10 @@ Running the Demo
 The backend is built using Scala, SBT, Unfiltered and Dispatch. In order to run the demo:
 
 * Clone the git.
-* Change to directory, run
-> sbt clean stage
-* Copy `src/main/resources/application.conf` to, e.g., `config/demo.conf`
+* Change to directory, run `sbt clean stage`.
+* Copy `src/main/resources/application.conf` to, e.g., `config/demo.conf`.
 * Create a client ID and secret for the Smart Keywording Service as described in our [documentation](https://redmine.kreuzverweis.com/projects/kaas/wiki/Wiki), and enter them in `config/demo.conf`.
-* Run `target/start config/demo.conf`
+* Run `target/start config/demo.conf`.
 * The demo will, by default, run on port `8888`.
 * Please, always use an externe config file as in the example, and don't edit the `src/main/resources/applicationconf` directly.
 
