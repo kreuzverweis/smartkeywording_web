@@ -6,7 +6,13 @@ This is Kreuzverweis Smart Keywording for the web(browser). This is mainly meant
 Running the Demo
 ================
 
-The backend is built using Scala, SBT, Unfiltered and Dispatch. In order to run the demo:
+The backend is built using [Scala](http://scala-lang.org),
+[SBT](https://github.com/harrah/xsbt),
+[Unfiltered](http://unfiltered.databinder.net/Unfiltered.html),
+[Dispatch](http://dispatch.databinder.net/Dispatch.html), and the [Typesafe
+Config library](https://github.com/typesafehub/config).
+
+In order to run the demo:
 
 * Clone the git.
 * Change to directory, run `sbt clean stage`.
@@ -14,7 +20,7 @@ The backend is built using Scala, SBT, Unfiltered and Dispatch. In order to run 
 * Create a client ID and secret for the Smart Keywording Service as described in our [documentation](https://redmine.kreuzverweis.com/projects/kaas/wiki/Wiki), and enter them in `config/demo.conf`.
 * Run `target/start config/demo.conf`.
 * The demo will, by default, run on port `8888`.
-* Please, always use an external config file as in the example, and don't edit the `src/main/resources/applicationconf` directly.
+* Please, always use an external config file as in the example, and don't edit the default config in `src/main/resources/application.conf` directly.
 
 This demo can be used as a basis for a an integration in a real application, as we did for the resourcespace DAM system. The plugin is always available on [github](https://github.com/kreuzverweis/smartkeywording_rs).
 
