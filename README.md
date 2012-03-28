@@ -22,7 +22,7 @@ In order to run the demo:
 * The demo will, by default, run on port `8888`.
 * Please, always use an external config file as in the example, and don't edit the default config in `src/main/resources/application.conf` directly.
 
-This demo can be used as a basis for a an integration in a real application, as we did for the resourcespace DAM system. The plugin is always available on [github](https://github.com/kreuzverweis/smartkeywording_rs).
+This demo can be used as a basis for a an integration in a real application, as we did for the [ResourceSpace DAM system](http://www.resourcespace.org/). The plugin is also available on [github](https://github.com/kreuzverweis/smartkeywording_rs).
 
 License
 =======
