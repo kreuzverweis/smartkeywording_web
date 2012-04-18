@@ -76,6 +76,14 @@ object Proxy extends Plan {
     case req @ GET(Path(Seg("completions" :: term :: Nil))) & Cookies(cookies) & Params(params) & AcceptLanguage(lang) => {
       getToken(cookies) match {
         case Some(token) =>
+          val p = translateParameters(params)
+          val reqparams = if (cookies.isDefinedAt("split")) {
+            val ret = p filter { case (k, v) => k != "split" }
+            val split = cookies("split").get.value
+            ret.toList :+ (("split", split))
+          } else {
+            p
+          }
           val a = completions / term <<? translateParameters(params) <:< Map("Accept-Language" -> (lang mkString ","), "Authorization" ->  "Bearer %s".format(token))
           try {
             h(a >- { res =>
