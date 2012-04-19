@@ -38,9 +38,9 @@ object Server {
     val client = config.getString("sk4web.client")
     val secret = config.getString("sk4web.secret")
     Proxy.client = (client, secret)
-    val port = config.getInt("sk4web.port")
-    Proxy.backoffice = url(config.getString("sk4web.backoffice"))
-    Proxy.keywording = url(config.getString("sk4web.keywording"))
+    val port = config.getInt("server.port")
+    Proxy.backoffice = url(config.getString("sk4web.backoffice")).secure
+    Proxy.keywording = url(config.getString("sk4web.keywording")).secure
     unfiltered.jetty.Http(port)
       .filter(Proxy)
       .resources((new File("static")).toURI().toURL())

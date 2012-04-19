@@ -51,6 +51,7 @@ object Proxy extends Plan {
         println(scala.io.Source.fromInputStream(r.body.get.getContent).getLines().mkString("\n"))
         h(r >- { res =>
           println("res")
+          println(res.toString)
           ResponseString(res)
         })
       } catch {
