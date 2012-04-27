@@ -26,18 +26,22 @@ var $_GET = {};
 var lang = 'en';
 
 function handleAjaxError(jqXHR) {
-	switch (jqXHR.status) {
-		case 401:
-			// user unauthorized
-			console.log("authentication failed, not authorized");
-			// if cookies are there but have wrong data
-			if($.cookie('token') && $.cookie('secret')) {
-				// display authentication failure message
-				var m = createMessage('error', txt_authenticationFailed_title, txt_authenticationFailed_content);
-				$(m).appendTo($('#messages'));
-			}
+	switch (true) {
+		case (jqXHR.status >= 400 && jqXHR.status < 500):
+			autoLogin(
+				function(){
+					// display authentication failure message
+					var m = createMessage('error', txt_authenticationFailed_title, txt_authenticationFailed_content);
+					$(m).appendTo($('#messages'));
+				},
+				function(){
+					// try previous request once more
+					console.debug('hickup');
+					var m = createMessage('warning', 'Oooops', 'A hickup occurred but everything should be OK now, please repeat your last action :)');
+					$(m).appendTo($('#messages'));
+				})			
 			break;
-		case 500:
+		case (jqXHR.status >= 500):
 			// internal server error
 			console.log("internal server error occurred");
 			var m = createMessage('error', txt_internalServerError_title, txt_internalServerError_content);

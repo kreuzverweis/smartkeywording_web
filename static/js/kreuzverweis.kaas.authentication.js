@@ -17,63 +17,57 @@
  **/
 
 function autoLogin(errorFunction, successFunction) {
-	// if no token is available
-	if(!$.cookie('token')) {
-		// if no userid is available
-		if(!$.cookie('userid')) {
-			// create user and store userid in cookie
-			$.ajax({
-				url : "/users",
-				type : "POST",
-				data : '',
-				async: false,
-				dataType : "xml",
-				error : function(jqXHR, textStatus, errorThrown) {
-					errorFunction.call(jqXHR);
-				},
-				success : function(xmlResponse) {
-					var userid = $('user > id', xmlResponse).text();
-					$.cookie('userid', userid, {
-						expires : 365
-					});
-					console.log('userid is ' + $.cookie('userid'));
-					// try a request and check if it works
-				}
-			});
-		}
-		var userid = $.cookie('userid');
-		$.ajax({
-			url : "/users/" + userid + "/tokens",
-			type : "POST",
-			data : '',
-			async: false,
-			dataType : "xml",
-			error : function(jqXHR, textStatus, errorThrown) {
-				errorFunction.call(jqXHR);
-			},
-			success : function(xmlResponse) {
-				var token = $('token > value', xmlResponse).text();
-				//var expires = $('token > expires', xmlResponse).text();
-				$.cookie('token', token);
-				console.log('token is ' + $.cookie('token'));
-			}
-		});
-	}
-	// try a request and check if it works
-	login(errorFunction, successFunction);
-}
-
-function login(errorFunc, successFunc) {
-	// send credentials
+	// send request and see if everything works
+	// if not make it work ...
 	$.ajax({
 		url : "/completions/" + encodeURIComponent("Köln") + "?limit=1",
 		dataType : "xml",
-		async: false,
+		async : false,
 		error : function(jqXHR, textStatus, errorThrown) {
-			errorFunc.call(jqXHR);
+			if(jqXHR.status >= 400 && jqXHR.status < 500) {// token is missing or no longer valid
+				// if no userid is available
+				if(!$.cookie('userid')) {
+					// create user and store userid in cookie
+					$.ajax({
+						url : "/users",
+						type : "POST",
+						data : '',
+						async : false,
+						dataType : "xml",
+						error : function(jqXHR, textStatus, errorThrown) {
+							errorFunction.call(jqXHR);
+						},
+						success : function(xmlResponse) {
+							var userid = $('user > id', xmlResponse).text();
+							$.cookie('userid', userid, {
+								expires : 365
+							});
+							console.log('received new userid ' + $.cookie('userid'));							
+						}
+					});
+				}
+				var userid = $.cookie('userid');
+				$.ajax({
+					url : "/users/" + userid + "/tokens",
+					type : "POST",
+					data : '',
+					async : false,
+					dataType : "xml",
+					error : function(jqXHR, textStatus, errorThrown) {
+						errorFunction.call(jqXHR);
+					},
+					success : function(xmlResponse) {
+						var token = $('token > value', xmlResponse).text();						
+						$.cookie('token', token);
+						console.log('received new token ' + $.cookie('token'));
+						successFunction.call(xmlResponse);
+					}
+				});
+			}
 		},
 		success : function(xmlResponse) {
-			successFunc.call(xmlResponse);
+			console.debug("everything seems ok, smart keywording is accessible");
+			successFunction.call(xmlResponse);
 		}
 	});
 }
