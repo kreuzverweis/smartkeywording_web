@@ -1,1 +1,1 @@
-web: JAVA_OPTS="-Dsk4web.port=$PORT" target/start heroku.conf
+web: JAVA_OPTS="-Dserver.port=$PORT" target/start heroku.conf
